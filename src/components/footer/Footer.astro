@@ -1,0 +1,156 @@
+---
+import { business, footerLinks, legalLinks, socialLinks } from "../../config/site.ts";
+import Icon from "../shared/Icon.astro";
+
+const year = new Date().getFullYear();
+const [emailUser, emailHost] = business.email.split("@");
+---
+
+<footer class="footer" aria-label="Site footer">
+  <div class="footer__inner container">
+    <div class="footer__brand">
+      {business.logo
+        ? <img src={business.logo} alt={`${business.name} logo`} width="90" height="90" />
+        : <span class="footer__wordmark">{business.name}</span>}
+      <p class="footer__tagline">{business.tagline}</p>
+      <div class="footer__social">
+        {socialLinks.map(({ href, label, icon }) => (
+          <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+            <Icon name={icon} size={22} />
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <nav class="footer__col" aria-label="Pages">
+      <h2 class="footer__heading">Explore</h2>
+      {footerLinks.map(({ href, label }) => (
+        <a href={href} class="footer__link">{label}</a>
+      ))}
+    </nav>
+
+    <nav class="footer__col" aria-label="Legal">
+      <h2 class="footer__heading">Legal</h2>
+      {legalLinks.map(({ href, label }) => (
+        <a href={href} class="footer__link">{label}</a>
+      ))}
+    </nav>
+
+    <div class="footer__col">
+      <h2 class="footer__heading">Get in touch</h2>
+      <a href={business.phoneHref} class="footer__link">{business.phone}</a>
+      <a
+        href="#"
+        class="footer__link"
+        data-email-user={emailUser}
+        data-email-host={emailHost}
+      >Email us</a>
+      <p class="footer__addr">{business.addressLine}</p>
+      <p class="footer__addr">{business.openingHours}</p>
+    </div>
+  </div>
+
+  <div class="footer__bottom container">
+    <span>© {year} {business.name}. All rights reserved.</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--bg-sage);
+    border-top: 1px solid var(--rule);
+    margin-top: var(--section-pad-y);
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    gap: var(--s-8);
+    padding-block: var(--s-12) var(--s-8);
+  }
+
+  .footer__brand img {
+    height: 64px;
+    width: auto;
+  }
+
+  .footer__wordmark {
+    font-weight: 700;
+    font-size: var(--text-xl);
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .footer__tagline {
+    margin: var(--s-3) 0 var(--s-4);
+    color: var(--ink-2);
+    max-width: 28ch;
+    font-size: var(--text-sm);
+  }
+
+  .footer__social {
+    display: flex;
+    gap: var(--s-3);
+    color: var(--ink-2);
+  }
+
+  .footer__social a:hover {
+    color: var(--accent);
+  }
+
+  .footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  .footer__heading {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0 0 var(--s-2);
+  }
+
+  .footer__link {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    transition: color 0.2s var(--ease);
+    width: fit-content;
+  }
+
+  .footer__link:hover {
+    color: var(--accent);
+  }
+
+  .footer__addr {
+    margin: 0;
+    color: var(--ink-3);
+    font-size: var(--text-sm);
+  }
+
+  .footer__bottom {
+    padding-block: var(--s-5);
+    border-top: 1px solid var(--rule);
+    color: var(--ink-3);
+    font-size: var(--text-xs);
+    text-align: center;
+  }
+
+  @media (max-width: 780px) {
+    .footer__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-8) var(--s-6);
+    }
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

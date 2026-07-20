@@ -1,0 +1,39 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { cta } from "../config/site.ts";
+---
+
+<Layout seo={{ title: "Page not found", noindex: true }}>
+  <section class="section notfound container">
+    <span class="notfound__mark" aria-hidden="true">404</span>
+    <h1>Page not found</h1>
+    <p>We couldn't find that page. Let's get you back on track.</p>
+    <div class="notfound__actions">
+      <a href="/" class="btn btn--primary">Back home</a>
+      <a href={cta.href} class="btn btn--ghost">{cta.label}</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .notfound {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-4);
+    padding-block: clamp(4rem, 12vw, 8rem);
+  }
+  .notfound__mark {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .notfound__actions {
+    display: flex;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: var(--s-4);
+  }
+</style>

@@ -1,0 +1,30 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   SAMPLE PALETTE — replace these values with your brand's.
+   These are the only colour definitions in the project; every component reads
+   them as CSS custom properties, so changing them here re-themes the whole
+   site. Light-only by default; structured so a dark theme can be added later
+   via :root[data-theme="dark"].
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+    /* surfaces */
+    --bg: #f8f7f3;        /* page background */
+    --bg-2: #efece4;      /* cards / subtle blocks */
+    --bg-sage: #e8ebe2;   /* soft accent surface (footer, info panels) */
+
+    /* ink (text) */
+    --ink: #22252a;       /* headings / primary text */
+    --ink-2: #4c525a;     /* body text */
+    --ink-3: #838a92;     /* muted / captions */
+    --on-accent: #ffffff; /* text on accent backgrounds */
+
+    /* accents */
+    --accent: #2f6f5e;    /* primary — CTAs, links, focus */
+    --accent-2: #d98c5a;  /* secondary — highlights, stars */
+
+    /* rules / borders */
+    --rule: rgba(34, 37, 42, 0.12);
+    --rule-2: rgba(34, 37, 42, 0.22);
+
+    color-scheme: light;
+}

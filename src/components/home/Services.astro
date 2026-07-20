@@ -1,0 +1,87 @@
+---
+import { services, cta } from "../../config/site.ts";
+
+interface Props {
+  showCta?: boolean;
+}
+const { showCta = false } = Astro.props;
+---
+
+<div class="services container">
+  <ul class="services__list reveal-stagger" data-reveal data-reveal-stagger>
+    {services.map((s) => (
+      <li class="service">
+        <span class="service__icon" aria-hidden="true">{s.icon}</span>
+        <h3 class="service__title">{s.title}</h3>
+        <p class="service__desc">{s.description}</p>
+      </li>
+    ))}
+  </ul>
+
+  {showCta && (
+    <div class="services__cta">
+      <a href={cta.href} class="btn btn--primary">{cta.label}</a>
+    </div>
+  )}
+</div>
+
+<style>
+  .services__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-6);
+  }
+
+  .service {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: var(--s-8) var(--s-6);
+    text-align: center;
+    transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease);
+  }
+
+  .service:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow);
+  }
+
+  .service__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    font-size: 2rem;
+    background: var(--bg-sage);
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--s-4);
+  }
+
+  .service__title {
+    font-size: var(--text-lg);
+    margin-bottom: var(--s-2);
+  }
+
+  .service__desc {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+
+  .services__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--s-10);
+  }
+
+  @media (max-width: 760px) {
+    .services__list {
+      grid-template-columns: 1fr;
+      max-width: 420px;
+      margin-inline: auto;
+    }
+  }
+</style>

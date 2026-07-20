@@ -1,0 +1,39 @@
+:root {
+    /* ---------- layout ---------- */
+    --container-width: 1120px;
+    --section-pad-x: clamp(24px, 5vw, 80px);
+    --header-height: 72px;
+
+    --ease: cubic-bezier(.2, .7, .2, 1);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --radius-pill: 999px;
+    --shadow: 0 12px 32px -12px rgba(75, 52, 48, 0.28);
+    --shadow-sm: 0 4px 16px -8px rgba(75, 52, 48, 0.25);
+
+    /* ---------- typography ---------- */
+    --font-sans: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-display: var(--font-sans);
+
+    /* fluid scale */
+    --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.85rem);
+    --text-sm: clamp(0.875rem, 0.84rem + 0.2vw, 0.95rem);
+    --text-base: clamp(1rem, 0.96rem + 0.25vw, 1.1rem);
+    --text-lg: clamp(1.15rem, 1.05rem + 0.5vw, 1.35rem);
+    --text-xl: clamp(1.4rem, 1.2rem + 0.9vw, 1.85rem);
+    --text-2xl: clamp(1.8rem, 1.45rem + 1.5vw, 2.5rem);
+    --text-3xl: clamp(2.3rem, 1.7rem + 2.6vw, 3.6rem);
+
+    /* ---------- spacing ---------- */
+    --s-1: 0.25rem;
+    --s-2: 0.5rem;
+    --s-3: 0.75rem;
+    --s-4: 1rem;
+    --s-5: 1.25rem;
+    --s-6: 1.5rem;
+    --s-8: 2rem;
+    --s-10: 2.5rem;
+    --s-12: 3rem;
+
+    --section-pad-y: clamp(3.5rem, 7vw, 6rem);
+}

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Update the domain to match your site.
+Sitemap: https://example.com/sitemap-index.xml

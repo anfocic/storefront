@@ -1,0 +1,26 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { pageSEO } from "../../config/seo.ts";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("legal");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const seo = pageSEO[entry.id] ?? {
+  title: `${entry.data.title} | Leixlip Dog Grooming`,
+  description: entry.data.description,
+};
+---
+
+<Layout seo={seo}>
+  <article class="legal">
+    <Content />
+  </article>
+</Layout>

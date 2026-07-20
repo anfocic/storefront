@@ -1,0 +1,108 @@
+---
+import reviews from "../../data/reviews.json";
+import Icon from "../shared/Icon.astro";
+---
+
+<div class="reviews container">
+  <div class="reviews__track" role="list" aria-label="Customer reviews">
+    {reviews.map((r) => (
+      <article class="review" role="listitem">
+        <div class="review__stars" aria-label={`${r.rating} out of 5 stars`}>
+          {Array.from({ length: r.rating }).map(() => (
+            <Icon name="star" size={18} class="review__star" />
+          ))}
+        </div>
+        <p class="review__text">{r.review}</p>
+        <footer class="review__footer">
+          <span class="review__name">{r.name}</span>
+          {r.link && (
+            <a class="review__link" href={r.link} target="_blank" rel="noopener noreferrer">
+              Read on Google →
+            </a>
+          )}
+        </footer>
+      </article>
+    ))}
+  </div>
+
+  <div class="reviews__hint" aria-hidden="true">← swipe to read more →</div>
+</div>
+
+<style>
+  .reviews__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(88%, 380px);
+    gap: var(--s-6);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: var(--s-2) 0 var(--s-5);
+    scrollbar-width: none;
+  }
+
+  .reviews__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .review {
+    scroll-snap-align: center;
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: var(--s-6);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .review__stars {
+    display: flex;
+    gap: 2px;
+    color: var(--accent-2);
+    margin-bottom: var(--s-3);
+  }
+
+  .review__text {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    flex: 1;
+    margin-bottom: var(--s-4);
+  }
+
+  .review__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+  }
+
+  .review__name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .review__link {
+    font-size: var(--text-xs);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .review__link:hover {
+    text-decoration: underline;
+  }
+
+  .reviews__hint {
+    text-align: center;
+    font-size: var(--text-xs);
+    color: var(--ink-3);
+    margin-top: var(--s-2);
+  }
+
+  @media (min-width: 980px) {
+    .reviews__hint {
+      display: none;
+    }
+  }
+</style>

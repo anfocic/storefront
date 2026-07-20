@@ -1,0 +1,32 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Services from "../components/home/Services.astro";
+import { pageSEO } from "../config/seo.ts";
+import { services, business } from "../config/site.ts";
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  provider: { "@type": "LocalBusiness", name: business.name },
+  areaServed: `${business.address.locality}, ${business.address.country}`,
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Services",
+    itemListElement: services.map((s) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: s.title, description: s.description },
+    })),
+  },
+};
+---
+
+<Layout seo={pageSEO.services} schemas={[serviceSchema]}>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow" style="display:block;text-align:center">What we do</span>
+      <h1 class="section__title">Our Services</h1>
+      <p class="section__lede">A short intro to your offering — swap for your own.</p>
+    </div>
+    <Services showCta />
+  </section>
+</Layout>

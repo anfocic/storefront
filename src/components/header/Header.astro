@@ -1,0 +1,276 @@
+---
+import { navLinks, cta, business, socialLinks } from "../../config/site.ts";
+import Icon from "../shared/Icon.astro";
+---
+
+<header class="nav" aria-label="Primary navigation">
+  <div class="nav__inner container">
+    <a href="/" class="nav__brand" aria-label={`${business.name} home`}>
+      {business.logo
+        ? <img src={business.logo} alt={`${business.name} logo`} width="120" height="120" />
+        : <span class="nav__wordmark">{business.name}</span>}
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      {navLinks.map(({ href, label }) => (
+        <a href={href} class="nav__link" data-nav-link={href}>{label}</a>
+      ))}
+    </nav>
+
+    <a href={cta.href} class="nav__cta btn btn--primary">{cta.label}</a>
+
+    <button class="nav__burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="nav__drawer" id="mobile-menu" hidden>
+    <nav class="nav__drawer-links" aria-label="Mobile">
+      {navLinks.map(({ href, label }) => (
+        <a href={href} class="nav__drawer-link" data-close>{label}</a>
+      ))}
+      <a href={cta.href} class="btn btn--primary nav__drawer-cta" data-close>{cta.label}</a>
+    </nav>
+    <div class="nav__drawer-social">
+      {socialLinks.map(({ href, label, icon }) => (
+        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+          <Icon name={icon} size={22} />
+        </a>
+      ))}
+    </div>
+  </div>
+  <div class="nav__backdrop" data-close hidden></div>
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>(".nav");
+  const burger = document.querySelector<HTMLButtonElement>(".nav__burger");
+  const drawer = document.getElementById("mobile-menu");
+  const backdrop = document.querySelector<HTMLElement>(".nav__backdrop");
+
+  if (nav) {
+    const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  const setOpen = (open: boolean) => {
+    if (!drawer || !backdrop || !burger) return;
+    drawer.hidden = !open;
+    backdrop.hidden = !open;
+    burger.setAttribute("aria-expanded", String(open));
+    burger.classList.toggle("is-open", open);
+    document.body.style.overflow = open ? "hidden" : "";
+  };
+  burger?.addEventListener("click", () => setOpen(drawer?.hidden ?? true));
+  document.querySelectorAll("[data-close]").forEach((el) =>
+    el.addEventListener("click", () => setOpen(false))
+  );
+
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]"));
+  const path = window.location.pathname.replace(/\/$/, "") || "/";
+  if (path === "/" || path === "") {
+    const map = new Map<string, HTMLAnchorElement>();
+    links.forEach((l) => {
+      const m = (l.getAttribute("data-nav-link") || "").match(/^\/?#(.+)$/);
+      if (m) map.set(m[1], l);
+    });
+    if (map.size) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            const link = map.get(e.target.id);
+            if (link && e.isIntersecting) {
+              map.forEach((l) => l.classList.remove("is-active"));
+              link.classList.add("is-active");
+            }
+          });
+        },
+        { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+      );
+      map.forEach((_, id) => {
+        const el = document.getElementById(id);
+        if (el) io.observe(el);
+      });
+    }
+  }
+</script>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    border-bottom: 1px solid transparent;
+    transition: background 0.25s var(--ease), border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  }
+
+  .nav.is-scrolled {
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border-bottom-color: var(--rule);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--s-6);
+    min-height: var(--header-height);
+    padding-block: 0.5rem;
+  }
+
+  .nav__brand {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav__brand img {
+    height: 52px;
+    width: auto;
+  }
+
+  .nav__wordmark {
+    font-weight: 700;
+    font-size: var(--text-lg);
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .nav__links {
+    display: flex;
+    gap: var(--s-6);
+    margin-left: auto;
+  }
+
+  .nav__link {
+    position: relative;
+    font-weight: 500;
+    font-size: var(--text-sm);
+    color: var(--ink-2);
+    transition: color 0.2s var(--ease);
+  }
+
+  .nav__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.25s var(--ease);
+  }
+
+  .nav__link:hover,
+  .nav__link.is-active {
+    color: var(--ink);
+  }
+
+  .nav__link:hover::after,
+  .nav__link.is-active::after {
+    transform: scaleX(1);
+  }
+
+  .nav__cta {
+    padding: 0.6rem 1.2rem;
+    font-size: var(--text-sm);
+  }
+
+  .nav__burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+  }
+
+  .nav__burger span {
+    display: block;
+    height: 2px;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: transform 0.25s var(--ease), opacity 0.2s var(--ease);
+  }
+
+  .nav__burger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav__burger.is-open span:nth-child(2) { opacity: 0; }
+  .nav__burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .nav__drawer {
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    width: min(320px, 82vw);
+    height: calc(100dvh - var(--header-height));
+    background: var(--bg);
+    border-left: 1px solid var(--rule);
+    box-shadow: var(--shadow);
+    padding: var(--s-8) var(--s-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-8);
+    z-index: 60;
+  }
+
+  .nav__drawer-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+  }
+
+  .nav__drawer-link {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .nav__drawer-cta {
+    margin-top: var(--s-4);
+    justify-content: center;
+  }
+
+  .nav__drawer-social {
+    display: flex;
+    gap: var(--s-4);
+    color: var(--ink-2);
+  }
+
+  .nav__drawer-social a:hover {
+    color: var(--accent);
+  }
+
+  .nav__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 55;
+  }
+
+  @media (max-width: 860px) {
+    .nav__links,
+    .nav__cta {
+      display: none;
+    }
+    .nav__burger {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 861px) {
+    .nav__drawer,
+    .nav__backdrop {
+      display: none;
+    }
+  }
+</style>

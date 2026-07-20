@@ -1,0 +1,90 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/home/Hero.astro";
+import Services from "../components/home/Services.astro";
+import ReviewsCarousel from "../components/home/ReviewsCarousel.astro";
+import ContactForm from "../components/contact/ContactForm.astro";
+import ContactInfo from "../components/contact/ContactInfo.astro";
+import { pageSEO, localBusinessSchema } from "../config/seo.ts";
+import { services, business } from "../config/site.ts";
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  provider: { "@type": "LocalBusiness", name: business.name },
+  areaServed: `${business.address.locality}, ${business.address.country}`,
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Services",
+    itemListElement: services.map((s) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: s.title, description: s.description },
+    })),
+  },
+};
+---
+
+<Layout seo={pageSEO.home} schemas={[localBusinessSchema(), serviceSchema]}>
+  <Hero />
+
+  <section id="services" class="section">
+    <div class="container">
+      <span class="eyebrow" style="display:block;text-align:center">What we do</span>
+      <h2 class="section__title">Our Services</h2>
+      <p class="section__lede">A one-line promise about how you work — swap for your own.</p>
+    </div>
+    <Services />
+  </section>
+
+  <section id="reviews" class="section reviews-section">
+    <div class="container">
+      <span class="eyebrow" style="display:block;text-align:center">Kind words</span>
+      <h2 class="section__title">What our customers say</h2>
+    </div>
+    <ReviewsCarousel />
+  </section>
+
+  <section id="contact" class="section">
+    <div class="container contact-grid" data-reveal>
+      <div>
+        <span class="eyebrow">Get in touch</span>
+        <h2 class="section__title contact-grid__title">Send us a message</h2>
+        <p class="contact-grid__lede">
+          A friendly line inviting people to reach out. Swap for your own.
+        </p>
+        <ContactInfo />
+      </div>
+      <ContactForm />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .reviews-section {
+    background: var(--bg-2);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: var(--s-10);
+    align-items: start;
+  }
+
+  .contact-grid__title {
+    text-align: left;
+    margin-bottom: var(--s-3);
+  }
+
+  .contact-grid__lede {
+    color: var(--ink-2);
+    margin-bottom: var(--s-6);
+  }
+
+  @media (max-width: 880px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: var(--s-8);
+    }
+  }
+</style>

@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "name": "Sample Customer",
+    "review": "Replace these with real reviews. A specific, concrete story beats a generic 'great service' every time — mention what the customer came in for and how it went.",
+    "rating": 5
+  },
+  {
+    "id": 2,
+    "name": "Another Happy Client",
+    "review": "Two or three sentences is the sweet spot. Keep the customer's own voice; lightly trim for length. A first name and last initial reads as authentic.",
+    "rating": 5
+  },
+  {
+    "id": 3,
+    "name": "A. Regular",
+    "review": "If you collect reviews on Google or Facebook, add a `link` field to each entry and the card shows a 'Read more' link out to the original.",
+    "rating": 5,
+    "link": "https://example.com/"
+  },
+  {
+    "id": 4,
+    "name": "First-time Visitor",
+    "review": "Aim for four to six reviews so the carousel has something to scroll. They rotate horizontally with swipe/scroll-snap and are fully keyboard accessible.",
+    "rating": 5
+  }
+]

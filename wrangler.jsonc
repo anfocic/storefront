@@ -1,0 +1,17 @@
+// Cloudflare Worker (Static Assets) config.
+// An assets-only Worker serves the static build in dist/ — no `main`, no
+// adapter. Deploy with:  npm run deploy
+//
+// If you add SSR later (@astrojs/cloudflare + output:"server"), the deployable
+// config is generated at dist/server/wrangler.json and you deploy that instead.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "storefront",
+  "compatibility_date": "2026-04-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

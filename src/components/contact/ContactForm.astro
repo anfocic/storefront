@@ -1,0 +1,179 @@
+---
+import { legalLinks } from "../../config/site.ts";
+
+const dullahanUrl = import.meta.env.PUBLIC_DULLAHAN_URL ?? "";
+const terms = legalLinks.find((l) => l.href.includes("terms"))!;
+const privacy = legalLinks.find((l) => l.href.includes("privacy"))!;
+---
+
+<div class="cform">
+  <form class="cform__form" id="contact-form" method="post" novalidate data-dullahan-url={dullahanUrl}>
+    <label class="honeypot" aria-hidden="true">
+      Do not fill this
+      <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" />
+    </label>
+
+    <div class="cform__row">
+      <div class="cform__field">
+        <label class="cform__label" for="cf-name">Name</label>
+        <input class="cform__input" id="cf-name" name="name" autocomplete="name" required />
+        <div class="cform__err" data-err-for="name"></div>
+      </div>
+      <div class="cform__field">
+        <label class="cform__label" for="cf-email">Email</label>
+        <input class="cform__input" id="cf-email" name="email" type="email" autocomplete="email" required />
+        <div class="cform__err" data-err-for="email"></div>
+      </div>
+    </div>
+
+    <div class="cform__field">
+      <label class="cform__label" for="cf-phone">Phone</label>
+      <input class="cform__input" id="cf-phone" name="phone" type="tel" autocomplete="tel" required />
+      <div class="cform__err" data-err-for="phone"></div>
+    </div>
+
+    <div class="cform__field">
+      <label class="cform__label" for="cf-message">Message</label>
+      <textarea class="cform__input cform__textarea" id="cf-message" name="message" required></textarea>
+      <div class="cform__err" data-err-for="message"></div>
+    </div>
+
+    <p class="cform__status" data-form-status role="alert"></p>
+
+    <button type="submit" class="btn btn--primary cform__submit" data-submit>
+      <span data-submit-label>Send Message</span>
+    </button>
+
+    <p class="cform__agree">
+      By sending, you agree to our
+      <a href={terms.href}>{terms.label}</a> and
+      <a href={privacy.href}>{privacy.label}</a>.
+    </p>
+  </form>
+
+  <div class="cform__success is-hidden" id="cform-success" role="status">
+    <span class="cform__success-icon" aria-hidden="true">🐾</span>
+    <h3>Message sent!</h3>
+    <p>Thanks for getting in touch — we'll reply as soon as we can.</p>
+  </div>
+</div>
+
+<script src="/scripts/contact.js" is:inline defer></script>
+
+<style>
+  .cform__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-5);
+  }
+
+  .cform__field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--s-5);
+  }
+
+  .cform__label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: var(--s-2);
+  }
+
+  .cform__input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--rule-2);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+
+  .cform__input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .cform__field.is-invalid .cform__input {
+    border-color: var(--accent);
+  }
+
+  .cform__textarea {
+    resize: vertical;
+    min-height: 130px;
+    line-height: 1.5;
+  }
+
+  .cform__err {
+    color: var(--accent);
+    font-size: var(--text-xs);
+    margin-top: var(--s-1);
+    min-height: 1em;
+  }
+
+  .cform__status:empty {
+    display: none;
+  }
+
+  .cform__status {
+    color: var(--accent);
+    font-size: var(--text-sm);
+    margin: 0 0 var(--s-4);
+  }
+
+  .cform__submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cform__agree {
+    margin: var(--s-4) 0 0;
+    font-size: var(--text-xs);
+    color: var(--ink-3);
+    text-align: center;
+  }
+
+  .cform__agree a {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .cform__form.is-hidden {
+    display: none;
+  }
+
+  .cform__success {
+    text-align: center;
+    padding: var(--s-10) var(--s-6);
+    background: var(--bg-sage);
+    border-radius: var(--radius);
+  }
+
+  .cform__success.is-hidden {
+    display: none;
+  }
+
+  .cform__success-icon {
+    font-size: 2.5rem;
+  }
+
+  .cform__success h3 {
+    margin: var(--s-3) 0 var(--s-2);
+  }
+
+  .cform__success p {
+    margin: 0;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 560px) {
+    .cform__row {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+</style>
