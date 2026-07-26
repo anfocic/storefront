@@ -228,6 +228,19 @@ export type HomeSection =
       columns?: 2 | 3 | 4;
     }
   | {
+      type: "pricing";
+      /** Anchor id — becomes `/#<id>`. */
+      id: string;
+      title?: string;
+      eyebrow?: string;
+      /** Rows in the price list. `price` is free text so you control the
+       *  currency/format (e.g. "€45", "from £20", "POA"). `featured` highlights
+       *  a row; `description` is an optional second line. */
+      items: { name: string; price: string; description?: string; featured?: boolean }[];
+      /** Small print under the list (e.g. "Prices include VAT"). */
+      note?: string;
+    }
+  | {
       type: "prose";
       /** Anchor id — becomes `/#<id>`. Lowercase, dash-separated. */
       id: string;
@@ -299,5 +312,18 @@ export const homeSections: HomeSection[] = [
   //     { src: "/images/work-1.jpg", alt: "A finished kitchen fit-out", caption: "Kitchen, Yourtown" },
   //     { src: "/images/work-2.jpg", alt: "A restored oak table" },
   //   ],
+  // },
+  // Example — a price list (price is free text; feature a row; optional note):
+  // {
+  //   type: "pricing",
+  //   id: "pricing",
+  //   eyebrow: "Our rates",
+  //   title: "Pricing",
+  //   items: [
+  //     { name: "Consultation", price: "Free", description: "30 minutes, no obligation" },
+  //     { name: "Standard service", price: "€45", featured: true },
+  //     { name: "Callout", price: "from €80" },
+  //   ],
+  //   note: "Prices include VAT.",
   // },
 ];

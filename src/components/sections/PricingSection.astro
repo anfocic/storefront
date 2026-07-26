@@ -1,0 +1,95 @@
+---
+import type { HomeSection } from "../../config/site.ts";
+
+interface Props {
+  section: HomeSection;
+}
+const { section } = Astro.props;
+// Narrow the union — this component only renders `pricing` entries.
+const s = section.type === "pricing" ? section : null;
+---
+
+{
+  s && (
+    <section id={s.id} class="section pricing-section">
+      <div class="container pricing-section__inner" data-reveal>
+        {s.eyebrow && <span class="eyebrow pricing-section__eyebrow">{s.eyebrow}</span>}
+        {s.title && <h2 class="section__title">{s.title}</h2>}
+        <ul class="pricing-list">
+          {s.items.map((item) => (
+            <li class:list={["pricing-row", { "pricing-row--featured": item.featured }]}>
+              <div class="pricing-row__text">
+                <span class="pricing-row__name">{item.name}</span>
+                {item.description && <span class="pricing-row__desc">{item.description}</span>}
+              </div>
+              <span class="pricing-row__price">{item.price}</span>
+            </li>
+          ))}
+        </ul>
+        {s.note && <p class="pricing-section__note">{s.note}</p>}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .pricing-section__inner {
+    max-width: 720px;
+  }
+  .pricing-section__eyebrow {
+    display: block;
+    text-align: center;
+  }
+
+  .pricing-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-8) 0 0;
+  }
+
+  .pricing-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-4) var(--s-4);
+    border-bottom: 1px solid var(--rule);
+  }
+  .pricing-row:first-child {
+    border-top: 1px solid var(--rule);
+  }
+
+  .pricing-row--featured {
+    background: var(--bg-2);
+    border-radius: var(--radius-sm);
+    border-bottom-color: transparent;
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+
+  .pricing-row__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+  }
+  .pricing-row__name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .pricing-row__desc {
+    font-size: var(--text-sm);
+    color: var(--ink-3);
+  }
+  .pricing-row__price {
+    flex: none;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .pricing-section__note {
+    margin-top: var(--s-5);
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--ink-3);
+  }
+</style>
