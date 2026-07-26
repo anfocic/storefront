@@ -20,7 +20,8 @@ token-driven: **you make it yours by editing config, not components.**
 - Contact form → dullahan `/contact` (self-hosted, no third-party form SaaS)
 - Privacy-first analytics (dullahan `/pt.js`), **opt-in** — off until you set a site id
 - All copy is config-driven (`content` in `src/config/site.ts`) — headings, ledes, labels, copyright
-- Feature flags to park sections (`reviewEnabled`, `blogEnabled`) until you're ready
+- Optional live **shop** — a config-flagged product catalog fetched from dullahan `/products`
+- Feature flags to park sections (`reviewEnabled`, `blogEnabled`, `shopEnabled`) until you're ready
 
 ## Quick start
 
@@ -67,6 +68,19 @@ only loads when all three are set.
 `public/pt.js` is a committed, prebuilt artifact. To change the tracker, edit
 `tracker/src/`, then `cd tracker && npm install && npm run build && npm test`
 (re-emits `public/pt.js`) and commit it.
+
+## Shop (dullahan products, opt-in)
+
+A simple product listing (no cart) driven by dullahan's `/products` API. Turn it
+on with `shopEnabled = true` in `src/config/site.ts` and set `PUBLIC_DULLAHAN_URL`.
+It adds `/shop` (listing) and `/shop/product?slug=…` (detail), both fetched
+**live in the browser** — so adding/editing products in dullahan shows up without
+redeploying the site. Prices come back as integer minor units + a `currency`
+from the API; product images are absolute URLs you host (a CDN/object store).
+The detail page pings the product's view counter so you can see what's viewed.
+
+> dullahan must allow this site's origin to read `/products` cross-origin — set
+> `PRODUCT_ORIGINS` on the server (it's open by default).
 
 ## Contact form (dullahan)
 

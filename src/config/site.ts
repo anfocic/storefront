@@ -7,6 +7,9 @@
 // sitemap — but visible in `astro dev` so you can build them out.
 export const reviewEnabled = false;
 export const blogEnabled = false;
+// The product catalog / shop (fetches dullahan `/products` live in the browser).
+// Also set PUBLIC_DULLAHAN_URL for it to load anything.
+export const shopEnabled = false;
 
 const flagged = (enabled: boolean) => enabled || import.meta.env.DEV;
 
@@ -71,6 +74,7 @@ export const socialLinks = [
 
 export const navLinks = [
   { href: "/#services", label: "Services" },
+  ...(flagged(shopEnabled) ? [{ href: "/shop", label: "Shop" }] : []),
   { href: "/#reviews", label: "Reviews" },
   ...(flagged(blogEnabled) ? [{ href: "/blog", label: "Blog" }] : []),
   { href: "/#contact", label: "Contact" },
@@ -78,6 +82,7 @@ export const navLinks = [
 
 export const footerLinks = [
   { href: "/services", label: "Services" },
+  ...(flagged(shopEnabled) ? [{ href: "/shop", label: "Shop" }] : []),
   { href: "/contact", label: "Contact" },
   ...(flagged(blogEnabled) ? [{ href: "/blog", label: "Blog" }] : []),
 ];
@@ -106,6 +111,17 @@ export const content = {
       lede: "A one-line promise about how you work — swap for your own.",
       // The standalone /services page's intro line.
       pageLede: "A short intro to your offering — swap for your own.",
+    },
+    shop: {
+      eyebrow: "Our products",
+      title: "Shop",
+      lede: "Browse what we offer.",
+      loading: "Loading products…",
+      empty: "No products yet — check back soon.",
+      error: "Couldn't load the shop. Please try again later.",
+      soldOut: "Sold out",
+      backLabel: "← Back to shop",
+      notFound: "That product isn't available.",
     },
     reviews: {
       eyebrow: "Kind words",

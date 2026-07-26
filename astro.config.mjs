@@ -4,7 +4,7 @@ import { fileURLToPath, URL } from "node:url";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 
-import { reviewEnabled, blogEnabled } from "./src/config/site.ts";
+import { reviewEnabled, blogEnabled, shopEnabled } from "./src/config/site.ts";
 
 const SITE_URL = process.env.PUBLIC_SITE_URL ?? "https://example.com";
 
@@ -22,7 +22,8 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         (reviewEnabled || !page.includes("/review")) &&
-        (blogEnabled || !page.includes("/blog")),
+        (blogEnabled || !page.includes("/blog")) &&
+        (shopEnabled || !page.includes("/shop")),
     }),
   ],
   vite: {

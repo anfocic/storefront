@@ -1,0 +1,179 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { pageSEO } from "../../config/seo.ts";
+import { content } from "../../config/site.ts";
+import { dullahan } from "../../config/dullahan.ts";
+
+// The catalog is fetched live in the browser (see the script below), so this
+// page ships a static shell with loading / empty / error states and hydrates
+// from dullahan `/products`. No product data is baked in at build → the catalog
+// updates without a redeploy.
+const shop = content.sections.shop;
+---
+
+<Layout seo={pageSEO.shop}>
+  <section class="section container">
+    <div class="shop__head">
+      <span class="eyebrow" style="display:block;text-align:center">{shop.eyebrow}</span>
+      <h1 class="section__title">{shop.title}</h1>
+      <p class="section__lede">{shop.lede}</p>
+    </div>
+
+    <div id="shop" data-base={dullahan.url}>
+      <p class="shop__msg" data-loading>{shop.loading}</p>
+      <p class="shop__msg" data-empty hidden>{shop.empty}</p>
+      <p class="shop__msg" data-error hidden>{shop.error}</p>
+      <ul class="shop__grid" data-grid hidden></ul>
+    </div>
+
+    <template id="pcard">
+      <li class="pcard">
+        <a class="pcard__link" data-link href="#">
+          <div class="pcard__media">
+            <img data-img alt="" loading="lazy" />
+            <span class="pcard__badge" data-badge hidden>{shop.soldOut}</span>
+          </div>
+          <div class="pcard__body">
+            <h2 class="pcard__title" data-title></h2>
+            <p class="pcard__desc" data-desc></p>
+            <span class="pcard__price" data-price></span>
+          </div>
+        </a>
+      </li>
+    </template>
+  </section>
+</Layout>
+
+<script>
+  import { fetchProducts, formatPrice } from "../../lib/products.ts";
+
+  const root = document.getElementById("shop");
+  const tpl = document.getElementById("pcard") as HTMLTemplateElement | null;
+  if (root && tpl) {
+    const base = root.dataset.base ?? "";
+    const grid = root.querySelector<HTMLUListElement>("[data-grid]")!;
+    const loading = root.querySelector<HTMLElement>("[data-loading]")!;
+    const empty = root.querySelector<HTMLElement>("[data-empty]")!;
+    const errorEl = root.querySelector<HTMLElement>("[data-error]")!;
+    const show = (el: HTMLElement) => el.removeAttribute("hidden");
+    const hide = (el: HTMLElement) => el.setAttribute("hidden", "");
+
+    const card = (p: import("../../lib/products.ts").Product) => {
+      const node = tpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
+      (node.querySelector("[data-link]") as HTMLAnchorElement).href =
+        `/shop/product?slug=${encodeURIComponent(p.slug)}`;
+      const img = node.querySelector<HTMLImageElement>("[data-img]")!;
+      if (p.image) {
+        img.src = p.image;
+        img.alt = p.title;
+      } else {
+        img.remove();
+      }
+      node.querySelector<HTMLElement>("[data-title]")!.textContent = p.title;
+      node.querySelector<HTMLElement>("[data-desc]")!.textContent = p.description;
+      node.querySelector<HTMLElement>("[data-price]")!.textContent = formatPrice(
+        p.price_cents,
+        p.currency,
+      );
+      if (!p.available) show(node.querySelector<HTMLElement>("[data-badge]")!);
+      return node;
+    };
+
+    (async () => {
+      if (!base) {
+        hide(loading);
+        show(empty);
+        return;
+      }
+      try {
+        const { products } = await fetchProducts(base);
+        hide(loading);
+        if (!products.length) {
+          show(empty);
+          return;
+        }
+        for (const p of products) grid.appendChild(card(p));
+        show(grid);
+      } catch {
+        hide(loading);
+        show(errorEl);
+      }
+    })();
+  }
+</script>
+
+<style>
+  .shop__head {
+    margin-bottom: var(--s-8);
+  }
+  .shop__msg {
+    text-align: center;
+    color: var(--ink-2);
+    padding-block: var(--s-8);
+  }
+  .shop__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--s-6);
+  }
+  .pcard {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease);
+  }
+  .pcard:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+  .pcard__link {
+    display: block;
+    color: inherit;
+  }
+  .pcard__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: var(--bg-sage);
+  }
+  .pcard__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .pcard__badge {
+    position: absolute;
+    top: var(--s-3);
+    left: var(--s-3);
+    background: var(--ink);
+    color: var(--bg);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+  }
+  .pcard__body {
+    padding: var(--s-5);
+  }
+  .pcard__title {
+    font-size: var(--text-base);
+    margin: 0 0 var(--s-2);
+  }
+  .pcard__desc {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    margin: 0 0 var(--s-3);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pcard__price {
+    font-weight: 700;
+    color: var(--ink);
+  }
+</style>

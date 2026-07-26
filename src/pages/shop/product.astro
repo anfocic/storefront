@@ -1,0 +1,147 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { content } from "../../config/site.ts";
+import { dullahan } from "../../config/dullahan.ts";
+
+// One static shell that reads ?slug at runtime and fetches the product live —
+// static output can't enumerate slugs, and the catalog is meant to change
+// without a redeploy. noindex: the shell has no per-product content for
+// crawlers (individual product SEO would need an SSR carve-out).
+const shop = content.sections.shop;
+---
+
+<Layout seo={{ title: shop.title, noindex: true }}>
+  <section class="section container product" data-base={dullahan.url}>
+    <a class="product__back" href="/shop">{shop.backLabel}</a>
+
+    <p class="shop__msg" data-loading>{shop.loading}</p>
+    <p class="shop__msg" data-error hidden>{shop.notFound}</p>
+
+    <article class="product__detail" data-detail hidden>
+      <div class="product__media">
+        <img data-img alt="" />
+        <span class="product__badge" data-badge hidden>{shop.soldOut}</span>
+      </div>
+      <div class="product__info">
+        <h1 class="product__title" data-title></h1>
+        <p class="product__price" data-price></p>
+        <p class="product__desc" data-desc></p>
+      </div>
+    </article>
+  </section>
+</Layout>
+
+<script>
+  import { fetchProduct, formatPrice, pingView } from "../../lib/products.ts";
+
+  const root = document.querySelector<HTMLElement>(".product");
+  if (root) {
+    const base = root.dataset.base ?? "";
+    const loading = root.querySelector<HTMLElement>("[data-loading]")!;
+    const errorEl = root.querySelector<HTMLElement>("[data-error]")!;
+    const detail = root.querySelector<HTMLElement>("[data-detail]")!;
+    const show = (el: HTMLElement) => el.removeAttribute("hidden");
+    const hide = (el: HTMLElement) => el.setAttribute("hidden", "");
+    const slug = new URLSearchParams(location.search).get("slug");
+
+    (async () => {
+      if (!base || !slug) {
+        hide(loading);
+        show(errorEl);
+        return;
+      }
+      try {
+        const p = await fetchProduct(base, slug);
+        const img = root.querySelector<HTMLImageElement>("[data-img]")!;
+        if (p.image) {
+          img.src = p.image;
+          img.alt = p.title;
+        } else {
+          img.remove();
+        }
+        root.querySelector<HTMLElement>("[data-title]")!.textContent = p.title;
+        root.querySelector<HTMLElement>("[data-price]")!.textContent = formatPrice(
+          p.price_cents,
+          p.currency,
+        );
+        root.querySelector<HTMLElement>("[data-desc]")!.textContent = p.description;
+        if (!p.available) show(root.querySelector<HTMLElement>("[data-badge]")!);
+        document.title = `${p.title} · ${document.title}`;
+        hide(loading);
+        show(detail);
+        // Record the view so the owner can see which products are looked at.
+        pingView(base, slug);
+      } catch {
+        hide(loading);
+        show(errorEl);
+      }
+    })();
+  }
+</script>
+
+<style>
+  .product__back {
+    display: inline-block;
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    margin-bottom: var(--s-6);
+  }
+  .product__back:hover {
+    color: var(--accent);
+  }
+  .shop__msg {
+    text-align: center;
+    color: var(--ink-2);
+    padding-block: var(--s-8);
+  }
+  .product__detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-10);
+    align-items: start;
+  }
+  .product__media {
+    position: relative;
+    aspect-ratio: 1;
+    background: var(--bg-sage);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .product__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .product__badge {
+    position: absolute;
+    top: var(--s-4);
+    left: var(--s-4);
+    background: var(--ink);
+    color: var(--bg);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+  }
+  .product__title {
+    margin: 0 0 var(--s-3);
+  }
+  .product__price {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 var(--s-5);
+  }
+  .product__desc {
+    color: var(--ink-2);
+    line-height: 1.7;
+    white-space: pre-line;
+  }
+  @media (max-width: 780px) {
+    .product__detail {
+      grid-template-columns: 1fr;
+      gap: var(--s-6);
+    }
+  }
+</style>

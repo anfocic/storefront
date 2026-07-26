@@ -41,6 +41,10 @@ export const pageSEO: Record<string, SEOOverrides> = {
     title: t("Services"),
     description: "What we offer and why people choose us. Swap for your own services.",
   },
+  shop: {
+    title: t("Shop"),
+    description: "Browse our products. Swap for your own shop description.",
+  },
   contact: {
     title: t("Contact"),
     description: "Get in touch to ask a question or book. Swap for your own contact copy.",

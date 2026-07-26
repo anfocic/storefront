@@ -14,14 +14,12 @@ export const dullahan = {
   // tracker OFF — a fresh clone sends no analytics anywhere until this is set.
   siteId: "" as string,
   analytics: { enabled: false as boolean },
-  // The product catalog / shop (wired up separately). Needs `url`.
-  shop: { enabled: false as boolean },
   // Optional dullahan CONTACT_TO_<SITE> tenant id for the contact form.
   contact: { site: undefined as string | undefined },
 };
 
-// Effective gates: a feature is live only when its flag is on AND its
-// prerequisites exist. Analytics also needs a siteId; both need a URL.
+// Analytics is live only when opted in AND its prerequisites exist (a URL to
+// send to and a siteId). The shop's on/off flag lives in site.ts alongside the
+// other feature flags (it reads dullahan.url at fetch time).
 export const analyticsEnabled =
   dullahan.analytics.enabled && Boolean(dullahan.url) && Boolean(dullahan.siteId);
-export const shopEnabled = dullahan.shop.enabled && Boolean(dullahan.url);
