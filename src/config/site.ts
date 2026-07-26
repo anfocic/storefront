@@ -276,6 +276,16 @@ export type HomeSection =
       note?: string;
     }
   | {
+      type: "team";
+      /** Anchor id — becomes `/#<id>`. */
+      id: string;
+      title?: string;
+      eyebrow?: string;
+      /** People. `photo` is optional — without it a monogram is shown. Set
+       *  `photoAlt` whenever `photo` is set. */
+      members: { name: string; role?: string; photo?: string; photoAlt?: string; bio?: string }[];
+    }
+  | {
       type: "prose";
       /** Anchor id — becomes `/#<id>`. Lowercase, dash-separated. */
       id: string;
@@ -360,5 +370,16 @@ export const homeSections: HomeSection[] = [
   //     { name: "Callout", price: "from €80" },
   //   ],
   //   note: "Prices include VAT.",
+  // },
+  // Example — a team section (photo optional; a monogram shows without one):
+  // {
+  //   type: "team",
+  //   id: "team",
+  //   eyebrow: "The people",
+  //   title: "Meet the team",
+  //   members: [
+  //     { name: "Alex Murphy", role: "Founder", photo: "/images/alex.jpg", photoAlt: "Alex Murphy", bio: "20 years in the trade." },
+  //     { name: "Sam Byrne", role: "Stylist" },
+  //   ],
   // },
 ];
