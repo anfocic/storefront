@@ -1,5 +1,5 @@
 ---
-import { business, socialLinks } from "../../config/site.ts";
+import { business, content, socialLinks } from "../../config/site.ts";
 import Icon from "../shared/Icon.astro";
 
 const [emailUser, emailHost] = business.email.split("@");
@@ -7,7 +7,7 @@ const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQu
 ---
 
 <aside class="cinfo" aria-label="Contact information">
-  <h3 class="cinfo__title">Contact details</h3>
+  <h3 class="cinfo__title">{content.sections.contact.infoTitle}</h3>
 
   <ul class="cinfo__list">
     <li>
@@ -16,7 +16,7 @@ const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQu
     </li>
     <li>
       <Icon name="email" size={20} class="cinfo__icon" />
-      <a href="#" data-email-user={emailUser} data-email-host={emailHost}>Email us</a>
+      <a href="#" data-email-user={emailUser} data-email-host={emailHost}>{content.sections.contact.emailLabel}</a>
     </li>
     <li>
       <Icon name="pin" size={20} class="cinfo__icon" />

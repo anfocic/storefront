@@ -1,5 +1,5 @@
 ---
-import { legalLinks } from "../../config/site.ts";
+import { content, legalLinks } from "../../config/site.ts";
 
 const dullahanUrl = import.meta.env.PUBLIC_DULLAHAN_URL ?? "";
 const terms = legalLinks.find((l) => l.href.includes("terms"))!;
@@ -41,7 +41,7 @@ const privacy = legalLinks.find((l) => l.href.includes("privacy"))!;
     <p class="cform__status" data-form-status role="alert"></p>
 
     <button type="submit" class="btn btn--primary cform__submit" data-submit>
-      <span data-submit-label>Send Message</span>
+      <span data-submit-label>{content.contactForm.submitLabel}</span>
     </button>
 
     <p class="cform__agree">
@@ -52,9 +52,9 @@ const privacy = legalLinks.find((l) => l.href.includes("privacy"))!;
   </form>
 
   <div class="cform__success is-hidden" id="cform-success" role="status">
-    <span class="cform__success-icon" aria-hidden="true">🐾</span>
-    <h3>Message sent!</h3>
-    <p>Thanks for getting in touch — we'll reply as soon as we can.</p>
+    <span class="cform__success-icon" aria-hidden="true">{content.contactForm.successIcon}</span>
+    <h3>{content.contactForm.successTitle}</h3>
+    <p>{content.contactForm.successBody}</p>
   </div>
 </div>
 

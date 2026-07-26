@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Services from "../components/home/Services.astro";
 import { pageSEO } from "../config/seo.ts";
-import { services, business } from "../config/site.ts";
+import { services, business, content } from "../config/site.ts";
 
 const serviceSchema = {
   "@context": "https://schema.org",
@@ -23,9 +23,9 @@ const serviceSchema = {
 <Layout seo={pageSEO.services} schemas={[serviceSchema]}>
   <section class="section">
     <div class="container">
-      <span class="eyebrow" style="display:block;text-align:center">What we do</span>
-      <h1 class="section__title">Our Services</h1>
-      <p class="section__lede">A short intro to your offering — swap for your own.</p>
+      <span class="eyebrow" style="display:block;text-align:center">{content.sections.services.eyebrow}</span>
+      <h1 class="section__title">{content.sections.services.title}</h1>
+      <p class="section__lede">{content.sections.services.pageLede}</p>
     </div>
     <Services showCta />
   </section>

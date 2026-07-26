@@ -1,5 +1,5 @@
 ---
-import { business, footerLinks, legalLinks, socialLinks } from "../../config/site.ts";
+import { business, content, footerLinks, legalLinks, socialLinks } from "../../config/site.ts";
 import Icon from "../shared/Icon.astro";
 
 const year = new Date().getFullYear();
@@ -23,35 +23,35 @@ const [emailUser, emailHost] = business.email.split("@");
     </div>
 
     <nav class="footer__col" aria-label="Pages">
-      <h2 class="footer__heading">Explore</h2>
+      <h2 class="footer__heading">{content.footer.exploreHeading}</h2>
       {footerLinks.map(({ href, label }) => (
         <a href={href} class="footer__link">{label}</a>
       ))}
     </nav>
 
     <nav class="footer__col" aria-label="Legal">
-      <h2 class="footer__heading">Legal</h2>
+      <h2 class="footer__heading">{content.footer.legalHeading}</h2>
       {legalLinks.map(({ href, label }) => (
         <a href={href} class="footer__link">{label}</a>
       ))}
     </nav>
 
     <div class="footer__col">
-      <h2 class="footer__heading">Get in touch</h2>
+      <h2 class="footer__heading">{content.footer.contactHeading}</h2>
       <a href={business.phoneHref} class="footer__link">{business.phone}</a>
       <a
         href="#"
         class="footer__link"
         data-email-user={emailUser}
         data-email-host={emailHost}
-      >Email us</a>
+      >{content.footer.emailLabel}</a>
       <p class="footer__addr">{business.addressLine}</p>
       <p class="footer__addr">{business.openingHours}</p>
     </div>
   </div>
 
   <div class="footer__bottom container">
-    <span>© {year} {business.name}. All rights reserved.</span>
+    <span>{content.footer.copyright(year)}</span>
   </div>
 </footer>
 

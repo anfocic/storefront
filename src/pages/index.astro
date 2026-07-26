@@ -6,7 +6,7 @@ import ReviewsCarousel from "../components/home/ReviewsCarousel.astro";
 import ContactForm from "../components/contact/ContactForm.astro";
 import ContactInfo from "../components/contact/ContactInfo.astro";
 import { pageSEO, localBusinessSchema } from "../config/seo.ts";
-import { services, business } from "../config/site.ts";
+import { services, business, content } from "../config/site.ts";
 
 const serviceSchema = {
   "@context": "https://schema.org",
@@ -29,17 +29,17 @@ const serviceSchema = {
 
   <section id="services" class="section">
     <div class="container">
-      <span class="eyebrow" style="display:block;text-align:center">What we do</span>
-      <h2 class="section__title">Our Services</h2>
-      <p class="section__lede">A one-line promise about how you work — swap for your own.</p>
+      <span class="eyebrow" style="display:block;text-align:center">{content.sections.services.eyebrow}</span>
+      <h2 class="section__title">{content.sections.services.title}</h2>
+      <p class="section__lede">{content.sections.services.lede}</p>
     </div>
     <Services />
   </section>
 
   <section id="reviews" class="section reviews-section">
     <div class="container">
-      <span class="eyebrow" style="display:block;text-align:center">Kind words</span>
-      <h2 class="section__title">What our customers say</h2>
+      <span class="eyebrow" style="display:block;text-align:center">{content.sections.reviews.eyebrow}</span>
+      <h2 class="section__title">{content.sections.reviews.title}</h2>
     </div>
     <ReviewsCarousel />
   </section>
@@ -47,11 +47,9 @@ const serviceSchema = {
   <section id="contact" class="section">
     <div class="container contact-grid" data-reveal>
       <div>
-        <span class="eyebrow">Get in touch</span>
-        <h2 class="section__title contact-grid__title">Send us a message</h2>
-        <p class="contact-grid__lede">
-          A friendly line inviting people to reach out. Swap for your own.
-        </p>
+        <span class="eyebrow">{content.sections.contact.eyebrow}</span>
+        <h2 class="section__title contact-grid__title">{content.sections.contact.title}</h2>
+        <p class="contact-grid__lede">{content.sections.contact.lede}</p>
         <ContactInfo />
       </div>
       <ContactForm />

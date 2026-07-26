@@ -7,6 +7,8 @@ import "../styles/base.css";
 import Header from "../components/header/Header.astro";
 import Footer from "../components/footer/Footer.astro";
 import { buildSEO, type SEOOverrides } from "../config/seo.ts";
+import { business } from "../config/site.ts";
+import { analyticsEnabled, dullahan } from "../config/dullahan.ts";
 
 interface Props {
   seo?: SEOOverrides;
@@ -25,8 +27,8 @@ const seo = buildSEO(Astro.url, seoOverrides);
     <meta name="generator" content={Astro.generator} />
     <script is:inline>document.documentElement.classList.add("js");</script>
 
-    <!-- Favicon (replace /favicon.svg with your own) -->
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Favicon — set business.favicon in src/config/site.ts -->
+    <link rel="icon" href={business.favicon} type="image/svg+xml" />
 
     <!-- Fonts -->
     <link
@@ -78,5 +80,11 @@ const seo = buildSEO(Astro.url, seoOverrides);
 
     <script src="/scripts/reveal.js" is:inline defer></script>
     <script src="/scripts/email.js" is:inline defer></script>
+
+    {/* Privacy-first analytics (dullahan). Off until a siteId is set in
+        src/config/dullahan.ts, so a fresh clone sends nothing anywhere. */}
+    {analyticsEnabled && (
+      <script is:inline defer src={`${dullahan.url}/pt.js`} data-site={dullahan.siteId}></script>
+    )}
   </body>
 </html>

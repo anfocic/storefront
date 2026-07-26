@@ -18,6 +18,8 @@ export const business = {
   logo: undefined as string | undefined,
   // Optional hero image (path in /public). Unset → a type-forward hero.
   heroImage: undefined as string | undefined,
+  // Favicon path in /public. Swap for your own icon.
+  favicon: "/favicon.svg" as string,
   phone: "+353 1 234 5678",
   phoneHref: "tel:+35312345678",
   email: "hello@example.com",
@@ -78,3 +80,58 @@ export const legalLinks = [
 ];
 
 export const cta = { href: "/#contact", label: "Get in touch" };
+
+// All user-facing copy — headings, ledes, labels. Edit here; no component
+// changes needed. (Business facts live in `business`; SEO in seo.ts.)
+export const content = {
+  hero: {
+    // A short location/positioning line above the headline.
+    eyebrow: "Yourtown, Co. Example",
+    lede: "A short, warm sentence about what you do and who it's for. Swap this for your own.",
+    // The primary button reuses `cta`; this is the secondary link beside it.
+    secondaryCta: { href: "/#services", label: "Our services" },
+  },
+  sections: {
+    services: {
+      eyebrow: "What we do",
+      title: "Our Services",
+      lede: "A one-line promise about how you work — swap for your own.",
+      // The standalone /services page's intro line.
+      pageLede: "A short intro to your offering — swap for your own.",
+    },
+    reviews: {
+      eyebrow: "Kind words",
+      title: "What our customers say",
+    },
+    contact: {
+      // Home-page contact section.
+      eyebrow: "Get in touch",
+      title: "Send us a message",
+      lede: "A friendly line inviting people to reach out. Swap for your own.",
+      // The standalone /contact page.
+      pageTitle: "Contact Us",
+      pageLede: "Questions or ready to book? We'd love to hear from you.",
+      // Shared contact-info block.
+      infoTitle: "Contact details",
+      emailLabel: "Email us",
+    },
+  },
+  footer: {
+    exploreHeading: "Explore",
+    legalHeading: "Legal",
+    contactHeading: "Get in touch",
+    emailLabel: "Email us",
+    copyright: (year: number) => `© ${year} ${business.name}. All rights reserved.`,
+  },
+  contactForm: {
+    submitLabel: "Send Message",
+    successIcon: "🐾",
+    successTitle: "Message sent!",
+    successBody: "Thanks for getting in touch — we'll reply as soon as we can.",
+  },
+  notFound: {
+    title: "Page not found",
+    body: "We couldn't find that page. Let's get you back on track.",
+    backLabel: "Back home",
+  },
+};

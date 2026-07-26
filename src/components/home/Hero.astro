@@ -1,19 +1,17 @@
 ---
-import { business, cta } from "../../config/site.ts";
+import { business, content, cta } from "../../config/site.ts";
 const hasImage = Boolean(business.heroImage);
 ---
 
 <section class:list={["hero", { "hero--centered": !hasImage }]} id="home">
   <div class="hero__inner container">
     <div class="hero__content" data-reveal>
-      <span class="eyebrow">{business.addressLine.split(",").slice(-2).join(", ").trim()}</span>
+      <span class="eyebrow">{content.hero.eyebrow}</span>
       <h1 class="hero__title">{business.tagline}</h1>
-      <p class="hero__lede">
-        A short, warm sentence about what you do and who it's for. Swap this for your own.
-      </p>
+      <p class="hero__lede">{content.hero.lede}</p>
       <div class="hero__actions">
         <a href={cta.href} class="btn btn--primary">{cta.label}</a>
-        <a href="/#services" class="btn btn--ghost">Our services</a>
+        <a href={content.hero.secondaryCta.href} class="btn btn--ghost">{content.hero.secondaryCta.label}</a>
       </div>
       <p class="hero__meta">{business.openingHours}</p>
     </div>
