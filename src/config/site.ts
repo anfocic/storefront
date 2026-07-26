@@ -217,6 +217,17 @@ export type HomeSection =
       items: { q: string; a: string }[];
     }
   | {
+      type: "gallery";
+      /** Anchor id — becomes `/#<id>`. */
+      id: string;
+      title?: string;
+      eyebrow?: string;
+      /** Photos. `alt` is required (accessibility); `caption` optional. */
+      images: { src: string; alt: string; caption?: string }[];
+      /** Columns on wide screens (2–4). Default 3; collapses on small screens. */
+      columns?: 2 | 3 | 4;
+    }
+  | {
       type: "prose";
       /** Anchor id — becomes `/#<id>`. Lowercase, dash-separated. */
       id: string;
@@ -275,6 +286,18 @@ export const homeSections: HomeSection[] = [
   //   items: [
   //     { q: "Do I need to book ahead?", a: "Walk-ins are welcome, but [booking](/#contact) guarantees a slot." },
   //     { q: "Where are you based?", a: "1 Main Street, Yourtown — parking is right outside." },
+  //   ],
+  // },
+  // Example — a photo gallery (alt is required; caption + columns optional):
+  // {
+  //   type: "gallery",
+  //   id: "gallery",
+  //   eyebrow: "Our work",
+  //   title: "Recent projects",
+  //   columns: 3,
+  //   images: [
+  //     { src: "/images/work-1.jpg", alt: "A finished kitchen fit-out", caption: "Kitchen, Yourtown" },
+  //     { src: "/images/work-2.jpg", alt: "A restored oak table" },
   //   ],
   // },
 ];

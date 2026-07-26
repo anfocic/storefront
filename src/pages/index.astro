@@ -6,6 +6,7 @@ import ReviewsSection from "../components/sections/ReviewsSection.astro";
 import ContactSection from "../components/sections/ContactSection.astro";
 import ProseSection from "../components/sections/ProseSection.astro";
 import FaqSection from "../components/sections/FaqSection.astro";
+import GallerySection from "../components/sections/GallerySection.astro";
 import { marked } from "marked";
 import { pageSEO, localBusinessSchema } from "../config/seo.ts";
 import { services, business, homeSections, type HomeSection } from "../config/site.ts";
@@ -19,6 +20,7 @@ const registry = {
   contact: ContactSection,
   prose: ProseSection,
   faq: FaqSection,
+  gallery: GallerySection,
 } satisfies Record<HomeSection["type"], unknown>;
 
 // FAQPage structured data, gathered from every `faq` section on the page. Only

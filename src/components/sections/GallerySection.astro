@@ -1,0 +1,77 @@
+---
+import type { HomeSection } from "../../config/site.ts";
+
+interface Props {
+  section: HomeSection;
+}
+const { section } = Astro.props;
+// Narrow the union — this component only renders `gallery` entries.
+const s = section.type === "gallery" ? section : null;
+const columns = s?.columns ?? 3;
+---
+
+{
+  s && (
+    <section id={s.id} class="section gallery-section">
+      <div class="container" data-reveal>
+        {s.eyebrow && <span class="eyebrow gallery-section__eyebrow">{s.eyebrow}</span>}
+        {s.title && <h2 class="section__title">{s.title}</h2>}
+        <ul class="gallery-grid" style={`--cols:${columns}`}>
+          {s.images.map((img) => (
+            <li class="gallery-grid__item">
+              <figure class="gallery-figure">
+                <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+                {img.caption && <figcaption class="gallery-figure__caption">{img.caption}</figcaption>}
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .gallery-section__eyebrow {
+    display: block;
+    text-align: center;
+  }
+
+  .gallery-grid {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-8) 0 0;
+    display: grid;
+    gap: var(--s-4);
+    /* One column on phones, two on small tablets, then the configured count. */
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 560px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 860px) {
+    .gallery-grid {
+      grid-template-columns: repeat(var(--cols), 1fr);
+    }
+  }
+
+  .gallery-figure {
+    margin: 0;
+  }
+  .gallery-figure img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+  .gallery-figure__caption {
+    margin-top: var(--s-2);
+    font-size: var(--text-sm);
+    color: var(--ink-3);
+    text-align: center;
+  }
+</style>
