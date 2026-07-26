@@ -99,7 +99,7 @@ export function localBusinessSchema() {
       postalCode: business.address.postalCode,
       addressCountry: business.address.country,
     },
-    openingHours: "Mo-Fr 09:00-17:00",
-    priceRange: "$$",
+    openingHours: business.openingHoursSchema,
+    priceRange: business.priceRange,
   };
 }

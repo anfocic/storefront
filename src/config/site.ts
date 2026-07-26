@@ -33,6 +33,14 @@ export const business = {
   addressLine: "1 Main Street, Yourtown, Co. Example",
   mapsQuery: "1 Main Street, Yourtown, Ireland",
   openingHours: "Mon–Fri, 9:00–17:00",
+  // Schema.org day/time format for JSON-LD (keep in sync with openingHours).
+  openingHoursSchema: "Mo-Fr 09:00-17:00",
+  // JSON-LD price hint: $ (cheap) … $$$$ (pricey).
+  priceRange: "$$",
+  // Page language (<html lang>), Open Graph locale, and the browser UI
+  // theme-color (match your theme's page background, --bg in theme.css).
+  locale: { lang: "en", ogLocale: "en_IE" },
+  themeColor: "#f8f7f3",
 };
 
 export const services = [
@@ -102,6 +110,10 @@ export const content = {
     reviews: {
       eyebrow: "Kind words",
       title: "What our customers say",
+      // Per-review "read more" link label (reviews may live on Google,
+      // Facebook, Trustpilot… — word it to match where yours are).
+      readMoreLabel: "Read review →",
+      swipeHint: "← swipe to read more →",
     },
     contact: {
       // Home-page contact section.
@@ -124,10 +136,27 @@ export const content = {
     copyright: (year: number) => `© ${year} ${business.name}. All rights reserved.`,
   },
   contactForm: {
+    fields: { name: "Name", email: "Email", phone: "Phone", message: "Message" },
     submitLabel: "Send Message",
+    sendingLabel: "Sending…",
+    // Consent line, rendered as: {agreePrefix} <Terms> {agreeSeparator} <Privacy>.
+    agreePrefix: "By sending, you agree to our",
+    agreeSeparator: "and",
     successIcon: "🐾",
     successTitle: "Message sent!",
     successBody: "Thanks for getting in touch — we'll reply as soon as we can.",
+    // Prefix for the phone number folded into the emailed message body.
+    phonePrefix: "Phone: ",
+    validation: {
+      name: "Please enter your name.",
+      email: "Please enter a valid email.",
+      phone: "Please enter a phone number.",
+      message: "Please add a short message (10+ characters).",
+    },
+    status: {
+      notConfigured: "Form is not configured yet. Please call or email us instead.",
+      error: "Something went wrong. Please call or email us instead.",
+    },
   },
   notFound: {
     title: "Page not found",
