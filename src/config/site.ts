@@ -305,6 +305,22 @@ export type HomeSection =
       note?: string;
     }
   | {
+      type: "booking";
+      /** Anchor id — becomes `/#<id>`. */
+      id: string;
+      title?: string;
+      eyebrow?: string;
+      lede?: string;
+      /** Your scheduler URL (Calendly, Square, SimplyBook, etc.). */
+      url: string;
+      /** Button text when linking out. Default "Book now". */
+      label?: string;
+      /** `true` embeds the scheduler inline (third-party iframe). Default
+       *  false — a button that opens the scheduler in a new tab. */
+      embed?: boolean;
+      note?: string;
+    }
+  | {
       type: "prose";
       /** Anchor id — becomes `/#<id>`. Lowercase, dash-separated. */
       id: string;
@@ -415,5 +431,16 @@ export const homeSections: HomeSection[] = [
   //   action: "https://your-provider.com/subscribe",
   //   emailField: "email",
   //   note: "We'll only email you now and then. Unsubscribe anytime.",
+  // },
+  // Example — a booking section (link-out by default; set embed:true to inline):
+  // {
+  //   type: "booking",
+  //   id: "book",
+  //   eyebrow: "Appointments",
+  //   title: "Book your visit",
+  //   lede: "Pick a time that suits you.",
+  //   url: "https://calendly.com/your-handle",
+  //   label: "Book now",
+  //   // embed: true,
   // },
 ];
