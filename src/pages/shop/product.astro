@@ -66,7 +66,28 @@ const shop = content.sections.shop;
         );
         root.querySelector<HTMLElement>("[data-desc]")!.textContent = p.description;
         if (!p.available) show(root.querySelector<HTMLElement>("[data-badge]")!);
+
+        // Update the page + social meta from the loaded product. Best-effort:
+        // crawlers that don't run JS still see the static shell (per-product SEO
+        // would need an SSR carve-out), but the tab title, link previews in apps
+        // that render JS, and the shared URL are all correct.
+        const setMeta = (sel: string, value: string) => {
+          const el = document.head.querySelector(sel);
+          if (el && value) el.setAttribute("content", value);
+        };
+        const desc = (p.description ?? "").replace(/\s+/g, " ").trim().slice(0, 200);
         document.title = `${p.title} · ${document.title}`;
+        setMeta('meta[name="description"]', desc);
+        setMeta('meta[property="og:title"]', p.title);
+        setMeta('meta[name="twitter:title"]', p.title);
+        setMeta('meta[property="og:description"]', desc);
+        setMeta('meta[name="twitter:description"]', desc);
+        setMeta('meta[property="og:url"]', location.href);
+        if (p.image) {
+          setMeta('meta[property="og:image"]', p.image);
+          setMeta('meta[name="twitter:image"]', p.image);
+        }
+
         hide(loading);
         show(detail);
         // Record the view so the owner can see which products are looked at.

@@ -36,6 +36,9 @@ const SITE = {
 
 const t = (page: string) => `${page} | ${SITE.siteName}`;
 
+// Per-page SEO. Any entry may also set `image: { url, width, height, alt }` to
+// override the site-wide OG/Twitter image for that page (relative URLs are made
+// absolute automatically) — e.g. `image: { url: "/og-services.png" }`.
 export const pageSEO: Record<string, SEOOverrides> = {
   home: { title: SITE.defaultTitle, description: SITE.defaultDescription },
   services: {
