@@ -189,19 +189,62 @@ export const content = {
 // `content` block above. The generic `prose` type is fully defined inline, so
 // you can add an About / mission / FAQ-style section — even several — from
 // config alone. Each `id` becomes the section's anchor (e.g. `/#about`).
+//
+// A `prose` section is: an optional `eyebrow` kicker, a `title`, an optional
+// `lede` (one larger intro line), and a `body` written in **Markdown** (bold,
+// links, lists, paragraphs). Add an `image` to place a picture beside/behind the
+// text via `mediaPosition`, and up to two buttons (`cta`, `secondaryCta`).
+// `theme`/`width`/`background` tune the look. Only `id`, `title`, `body` are
+// required. Always set `imageAlt` when you set `image` (accessibility).
 // ─────────────────────────────────────────────────────────────────────────
+
+/** A single button: label + destination. Matches `cta` / `secondaryCta` above. */
+export type SectionCta = { href: string; label: string };
+
 export type HomeSection =
   | { type: "hero" }
   | { type: "services" }
   | { type: "reviews" }
   | { type: "contact" }
   | {
+      type: "faq";
+      /** Anchor id — becomes `/#<id>`. */
+      id: string;
+      title?: string;
+      eyebrow?: string;
+      /** Question/answer pairs. Each answer `a` is Markdown. Also emitted as
+       *  FAQPage structured data for search engines. */
+      items: { q: string; a: string }[];
+    }
+  | {
       type: "prose";
+      /** Anchor id — becomes `/#<id>`. Lowercase, dash-separated. */
       id: string;
       title: string;
+      /** Markdown — rendered to HTML at build time. */
       body: string;
+      /** Small kicker above the title. */
       eyebrow?: string;
-      align?: "center" | "left";
+      /** One larger intro line between the title and the body. */
+      lede?: string;
+      /** Image URL (absolute, or under `public/`). */
+      image?: string;
+      /** Alt text — required whenever `image` is set. */
+      imageAlt?: string;
+      /** Where the image sits relative to the text. Default `top`. */
+      mediaPosition?: "left" | "right" | "top" | "background" | "none";
+      /** Text alignment. Default `center` (or `left` in two-column layouts). */
+      align?: "left" | "center" | "right";
+      /** Colour scheme for the text — pair `dark` with a `background` image. */
+      theme?: "light" | "dark";
+      /** Content width. Default `contained`. */
+      width?: "narrow" | "contained" | "full-bleed";
+      /** CSS colour or image URL behind the section. */
+      background?: string;
+      /** Primary button. */
+      cta?: SectionCta;
+      /** Secondary button beside the primary. */
+      secondaryCta?: SectionCta;
     };
 
 export const homeSections: HomeSection[] = [
@@ -215,6 +258,23 @@ export const homeSections: HomeSection[] = [
   //   id: "about",
   //   eyebrow: "About us",
   //   title: "A little about the shop",
-  //   body: "Two or three sentences about who you are and why people trust you.",
+  //   lede: "One warm sentence that sums up who you are.",
+  //   body: "Two or three sentences with **bold** bits and a [link](/#contact).\n\nA second paragraph works too.",
+  //   image: "/images/about.jpg",
+  //   imageAlt: "Our team at the front counter",
+  //   mediaPosition: "right",
+  //   align: "left",
+  //   cta: { href: "/#contact", label: "Get in touch" },
+  // },
+  // Example — a FAQ section (answers are Markdown; also emitted as FAQ rich results):
+  // {
+  //   type: "faq",
+  //   id: "faq",
+  //   eyebrow: "Good to know",
+  //   title: "Frequently asked questions",
+  //   items: [
+  //     { q: "Do I need to book ahead?", a: "Walk-ins are welcome, but [booking](/#contact) guarantees a slot." },
+  //     { q: "Where are you based?", a: "1 Main Street, Yourtown — parking is right outside." },
+  //   ],
   // },
 ];

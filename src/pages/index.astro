@@ -5,6 +5,8 @@ import ServicesSection from "../components/sections/ServicesSection.astro";
 import ReviewsSection from "../components/sections/ReviewsSection.astro";
 import ContactSection from "../components/sections/ContactSection.astro";
 import ProseSection from "../components/sections/ProseSection.astro";
+import FaqSection from "../components/sections/FaqSection.astro";
+import { marked } from "marked";
 import { pageSEO, localBusinessSchema } from "../config/seo.ts";
 import { services, business, homeSections, type HomeSection } from "../config/site.ts";
 
@@ -16,7 +18,24 @@ const registry = {
   reviews: ReviewsSection,
   contact: ContactSection,
   prose: ProseSection,
+  faq: FaqSection,
 } satisfies Record<HomeSection["type"], unknown>;
+
+// FAQPage structured data, gathered from every `faq` section on the page. Only
+// emitted when at least one FAQ exists.
+const faqItems = homeSections.flatMap((s) => (s.type === "faq" ? s.items : []));
+const faqSchema =
+  faqItems.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqItems.map((it) => ({
+          "@type": "Question",
+          name: it.q,
+          acceptedAnswer: { "@type": "Answer", text: marked.parse(it.a) },
+        })),
+      }
+    : null;
 
 const serviceSchema = {
   "@context": "https://schema.org",
@@ -34,7 +53,10 @@ const serviceSchema = {
 };
 ---
 
-<Layout seo={pageSEO.home} schemas={[localBusinessSchema(), serviceSchema]}>
+<Layout
+  seo={pageSEO.home}
+  schemas={[localBusinessSchema(), serviceSchema, ...(faqSchema ? [faqSchema] : [])]}
+>
   {
     homeSections.map((section) => {
       const Section = registry[section.type];
