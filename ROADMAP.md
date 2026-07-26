@@ -18,26 +18,26 @@ Effort: **S** ≈ half-day · **M** ≈ 1–2 sessions · **L** ≈ multi-sessio
 
 ---
 
-## Phase 1 — quick wins (config-only for the owner, fit the section registry)
+## Phase 1 — quick wins (config-only for the owner, fit the section registry) — ✅ DONE
 
-### 1. FAQ section  · S · registry
+### 1. FAQ section  · S · registry — ✅
 Accordion of question/answer pairs — near-universal, and emits **FAQPage JSON-LD** (real
 SEO win; injected via `Layout schemas={[...]}` like `localBusinessSchema()`).
 - Config: `{ type: "faq", id, title, eyebrow?, items: [{ q, a }] }` (`a` is Markdown).
 - Accept: renders an accessible `<details>`/disclosure list; FAQ schema present in
   `dist/index.html`; keyboard-operable.
 
-### 2. Gallery / photo grid  · S · registry
+### 2. Gallery / photo grid  · S · registry — ✅
 The biggest visual gap — salons, cafés, tradespeople sell on photos.
 - Config: `{ type: "gallery", id, title?, eyebrow?, images: [{ src, alt, caption? }], columns? }`.
 - Accept: responsive grid, lazy-loaded images, alt required; optional lightbox is a later polish.
 
-### 3. Pricing / price list  · S · registry
+### 3. Pricing / price list  · S · registry — ✅
 `services` have no price and the shop (dullahan catalog) is overkill for a rate card / café menu.
 - Config: `{ type: "pricing", id, title?, eyebrow?, note?, items: [{ name, price, description?, featured? }] }`.
 - Accept: clean price rows/cards; `price` is free text (owner controls currency/format).
 
-### 4. Announcement / promo bar  · S · global (not a section)
+### 4. Announcement / promo bar  · S · global (not a section) — ✅
 Dismissible top strip ("Closed Aug 12–15", "20% off"). One config value, site-wide.
 - Config: `announcement?: { message, href?, dismissible? }` in `site.ts`; rendered in `Layout`.
 - Accept: shows above header; dismiss persists per session (localStorage); absent when unset.
@@ -46,7 +46,7 @@ Dismissible top strip ("Closed Aug 12–15", "20% off"). One config value, site-
 
 ## Phase 2 — info & trust
 
-### 5. Structured opening hours + "Open now"  · M · refactor
+### 5. Structured opening hours + "Open now"  · M · refactor — ✅
 Today `openingHours` is one free-text string in 3 places plus a separate
 `openingHoursSchema` that can drift. Make per-day hours the single source of truth.
 - Config: `hours: { mon: "9:00–17:00", tue: …, … }` (or `closed`); derive the display

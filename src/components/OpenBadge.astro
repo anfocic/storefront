@@ -1,0 +1,35 @@
+---
+// A live "Open now" / "Closed" pill, filled client-side by /scripts/open-now.js
+// (which reads the hours data injected in Layout.astro). Renders nothing until
+// JS runs, so it never shows a wrong state on a stale/cached page.
+---
+
+<span class="open-badge" data-open-badge hidden></span>
+
+<style>
+  .open-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: 0.15em 0.6em;
+    border-radius: var(--radius-pill);
+    line-height: 1.4;
+  }
+  .open-badge::before {
+    content: "";
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .open-badge[data-state="open"] {
+    color: #1f7a4d;
+    background: rgba(31, 122, 77, 0.12);
+  }
+  .open-badge[data-state="closed"] {
+    color: var(--ink-3);
+    background: var(--bg-2);
+  }
+</style>

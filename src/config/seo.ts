@@ -16,6 +16,7 @@ export type SEOOverrides = {
 };
 
 import { business } from "./site.ts";
+import { openingHoursSpec } from "../lib/hours.ts";
 
 // EDIT ME — site-wide SEO defaults. Name/NAP come from `business` (site.ts) to
 // avoid drift; the copy below is SEO-specific.
@@ -103,7 +104,7 @@ export function localBusinessSchema() {
       postalCode: business.address.postalCode,
       addressCountry: business.address.country,
     },
-    openingHours: business.openingHoursSchema,
+    openingHoursSpecification: openingHoursSpec(business.hours),
     priceRange: business.priceRange,
   };
 }

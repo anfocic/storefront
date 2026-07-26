@@ -1,6 +1,7 @@
 ---
-import { business, content, footerLinks, legalLinks, socialLinks } from "../../config/site.ts";
+import { business, content, footerLinks, legalLinks, socialLinks, openingHoursText } from "../../config/site.ts";
 import Icon from "../shared/Icon.astro";
+import OpenBadge from "../OpenBadge.astro";
 
 const year = new Date().getFullYear();
 const [emailUser, emailHost] = business.email.split("@");
@@ -46,7 +47,7 @@ const [emailUser, emailHost] = business.email.split("@");
         data-email-host={emailHost}
       >{content.footer.emailLabel}</a>
       <p class="footer__addr">{business.addressLine}</p>
-      <p class="footer__addr">{business.openingHours}</p>
+      <p class="footer__addr">{openingHoursText} <OpenBadge /></p>
     </div>
   </div>
 

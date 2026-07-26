@@ -1,5 +1,5 @@
 ---
-import { business, content, cta } from "../../config/site.ts";
+import { business, content, cta, openingHoursText } from "../../config/site.ts";
 const hasImage = Boolean(business.heroImage);
 ---
 
@@ -13,7 +13,7 @@ const hasImage = Boolean(business.heroImage);
         <a href={cta.href} class="btn btn--primary">{cta.label}</a>
         <a href={content.hero.secondaryCta.href} class="btn btn--ghost">{content.hero.secondaryCta.label}</a>
       </div>
-      <p class="hero__meta">{business.openingHours}</p>
+      <p class="hero__meta">{openingHoursText}</p>
     </div>
 
     {hasImage && (

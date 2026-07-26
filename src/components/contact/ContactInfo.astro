@@ -1,6 +1,7 @@
 ---
-import { business, content, socialLinks } from "../../config/site.ts";
+import { business, content, socialLinks, openingHoursByDay } from "../../config/site.ts";
 import Icon from "../shared/Icon.astro";
+import OpenBadge from "../OpenBadge.astro";
 
 const [emailUser, emailHost] = business.email.split("@");
 const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQuery)}`;
@@ -24,7 +25,20 @@ const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQu
     </li>
   </ul>
 
-  <p class="cinfo__hours">{business.openingHours}</p>
+  <div class="cinfo__hours">
+    <div class="cinfo__hours-head">
+      <span class="cinfo__hours-label">Opening hours</span>
+      <OpenBadge />
+    </div>
+    <ul class="cinfo__hours-list">
+      {openingHoursByDay.map((l) => (
+        <li>
+          <span>{l.label}</span>
+          <span>{l.value}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
 
   <div class="cinfo__social">
     {socialLinks.map(({ href, label, icon }) => (
@@ -81,6 +95,27 @@ const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQu
     color: var(--ink-2);
     font-size: var(--text-sm);
     margin-bottom: var(--s-5);
+  }
+  .cinfo__hours-head {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-2);
+  }
+  .cinfo__hours-label {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .cinfo__hours-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .cinfo__hours-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: 2px 0;
   }
 
   .cinfo__social {

@@ -80,8 +80,17 @@ const seo = buildSEO(Astro.url, seoOverrides);
 
     <Footer />
 
+    {/* Opening-hours data for the live "Open now" badge (src/components/OpenBadge.astro). */}
+    <script
+      type="application/json"
+      id="hours-data"
+      is:inline
+      set:html={JSON.stringify({ hours: business.hours, tz: business.timezone })}
+    />
+
     <script src="/scripts/reveal.js" is:inline defer></script>
     <script src="/scripts/email.js" is:inline defer></script>
+    <script src="/scripts/open-now.js" is:inline defer></script>
 
     {/* Privacy-first analytics (dullahan). The tracker ships with this site
         (public/pt.js, built from ./tracker) and posts events to the dullahan

@@ -3,6 +3,8 @@
 // rest of the site follows. No component edits needed for content changes.
 // ─────────────────────────────────────────────────────────────────────────
 
+import { hoursLines, hoursShort } from "../lib/hours.ts";
+
 // Parked sections. While false: no nav link, no built page, excluded from the
 // sitemap — but visible in `astro dev` so you can build them out.
 export const reviewEnabled = false;
@@ -35,9 +37,22 @@ export const business = {
   },
   addressLine: "1 Main Street, Yourtown, Co. Example",
   mapsQuery: "1 Main Street, Yourtown, Ireland",
-  openingHours: "Mon–Fri, 9:00–17:00",
-  // Schema.org day/time format for JSON-LD (keep in sync with openingHours).
-  openingHoursSchema: "Mo-Fr 09:00-17:00",
+  // Opening hours, one entry per day. Use "Closed" (or "") for closed days;
+  // split shifts with a comma ("9:00–13:00, 14:00–17:00"). This single source
+  // drives the displayed hours, the JSON-LD, and the live "Open now" badge —
+  // no separate schema string to keep in sync.
+  hours: {
+    mon: "9:00–17:00",
+    tue: "9:00–17:00",
+    wed: "9:00–17:00",
+    thu: "9:00–17:00",
+    fri: "9:00–17:00",
+    sat: "Closed",
+    sun: "Closed",
+  },
+  // IANA timezone the hours are in, for an accurate "Open now" badge. Unset →
+  // the visitor's own timezone is assumed (fine for a local business).
+  timezone: "Europe/Dublin" as string | undefined,
   // JSON-LD price hint: $ (cheap) … $$$$ (pricey).
   priceRange: "$$",
   // Page language (<html lang>), Open Graph locale, and the browser UI
@@ -45,6 +60,12 @@ export const business = {
   locale: { lang: "en", ogLocale: "en_IE" },
   themeColor: "#f8f7f3",
 };
+
+// Derived from `business.hours` (edit the hours, not these). `openingHoursText`
+// is a compact one-liner of the open days; `openingHoursByDay` is the full
+// per-day list for the contact page.
+export const openingHoursText = hoursShort(business.hours);
+export const openingHoursByDay = hoursLines(business.hours);
 
 export const services = [
   {
