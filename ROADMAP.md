@@ -1,5 +1,8 @@
 # Storefront roadmap — config-driven sections for solo owners
 
+> **Status: all 11 features shipped** (Phases 1–3) on `feat/configurable-and-tracker`.
+> Remaining optional item: finish the parked blog (see bottom).
+
 The goal: a non-technical owner builds their whole site by editing `src/config/site.ts`
 (+ `theme.css` for branding), never a component. This roadmap tracks the 11 features a
 solo small-business owner most often reaches for that the template can't yet express.
@@ -44,7 +47,7 @@ Dismissible top strip ("Closed Aug 12–15", "20% off"). One config value, site-
 
 ---
 
-## Phase 2 — info & trust
+## Phase 2 — info & trust — ✅ DONE
 
 ### 5. Structured opening hours + "Open now"  · M · refactor — ✅
 Today `openingHours` is one free-text string in 3 places plus a separate
@@ -54,39 +57,39 @@ Today `openingHours` is one free-text string in 3 places plus a separate
 - Accept: footer/contact/hero read from `hours`; JSON-LD generated, not hand-kept; badge
   reflects current day/time. Keep a plain-string fallback for simple cases.
 
-### 6. Map embed (opt-in) on contact  · S
+### 6. Map embed (opt-in) on contact  · S — ✅
 Currently only a *link* to Google Maps. Add an optional inline embed.
 - Config: `map?: { embed: boolean }` (reuses `business.mapsQuery`).
 - Accept: opt-in only (third-party iframe = cookies; off by default to stay privacy-clean);
   link-only behaviour unchanged when disabled.
 
-### 7. Team / "meet us" section  · S · registry
+### 7. Team / "meet us" section  · S · registry — ✅
 Common for clinics, salons, agencies.
 - Config: `{ type: "team", id, title?, eyebrow?, members: [{ name, role?, photo?, photoAlt?, bio? }] }`.
 - Accept: photo grid with names/roles; graceful when photos omitted.
 
-### 8. Video support in hero / prose  · S
+### 8. Video support in hero / prose  · S — ✅
 `prose` supports an image but not video.
 - Config: extend `prose` with `video?: { src?, embed?, poster? }`; optionally a hero video.
 - Accept: self-hosted `<video>` or a lazy-loaded embed; falls back to `image` when absent.
 
 ---
 
-## Phase 3 — needs an integration decision
+## Phase 3 — integrations — ✅ DONE (implemented provider-agnostically, no decision needed)
 
-### 9. Newsletter signup  · L · decision
+### 9. Newsletter signup  · L · decision — ✅ (provider-agnostic: form posts to any provider's action URL)
 Email capture has no home (no list provider; dullahan has no list feature).
 - Decision: which provider (Buttondown/Mailchimp/dullahan endpoint?). Then a config block
   + a form component posting to it.
 - Accept: submits to the chosen provider; success/error states mirror the contact form.
 
-### 10. Booking / appointments  · M · decision
+### 10. Booking / appointments  · M · decision — ✅ (link-out default; `embed` flag for inline iframe)
 Service businesses want "Book now" → Calendly/Square/etc. Works today as a plain CTA link;
 this makes it first-class.
 - Decision: link-out vs embedded scheduler. Link-out is S; embed is M and adds a third party.
 - Accept: prominent booking CTA driven by config; no dead end when unconfigured.
 
-### 11. Per-page / per-product OG images  · M
+### 11. Per-page / per-product OG images  · M — ✅ (per-page override + client-side product meta; SSR still the deeper option)
 One static `/og.png` for the whole site; product pages and prose sections can't set their own.
 `seo.ts` already has `SeoImage`, so it's plumbing (+ optionally build-time OG generation).
 - Accept: per-page `ogImage` override respected; product detail can supply its `image`.
