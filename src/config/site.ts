@@ -94,6 +94,16 @@ export const legalLinks = [
 
 export const cta = { href: "/#contact", label: "Get in touch" };
 
+// Optional site-wide announcement bar, shown above the header on every page.
+// Set to an object to switch it on; leave `null` to hide it entirely. When
+// `dismissible`, a visitor can close it and it stays closed for their session
+// (changing `message` shows it again).
+export const announcement: {
+  message: string;
+  href?: string;
+  dismissible?: boolean;
+} | null = null;
+
 // All user-facing copy — headings, ledes, labels. Edit here; no component
 // changes needed. (Business facts live in `business`; SEO in seo.ts.)
 export const content = {

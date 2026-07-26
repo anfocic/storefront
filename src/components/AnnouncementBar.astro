@@ -1,0 +1,86 @@
+---
+import { announcement } from "../config/site.ts";
+const a = announcement;
+---
+
+{
+  a && (
+    <div class="announce" data-announce data-key={a.message}>
+      <div class="announce__inner container">
+        {a.href ? (
+          <a class="announce__msg" href={a.href}>
+            {a.message}
+          </a>
+        ) : (
+          <span class="announce__msg">{a.message}</span>
+        )}
+        {a.dismissible && (
+          <button
+            type="button"
+            class="announce__close"
+            aria-label="Dismiss announcement"
+            data-announce-close
+          >
+            &times;
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+{
+  a?.dismissible && (
+    <script is:inline>
+      {`(function () {
+        var bar = document.querySelector('[data-announce]');
+        if (!bar) return;
+        var key = 'announce-dismissed:' + (bar.getAttribute('data-key') || '');
+        try { if (sessionStorage.getItem(key)) { bar.remove(); return; } } catch (e) {}
+        var btn = bar.querySelector('[data-announce-close]');
+        if (btn) btn.addEventListener('click', function () {
+          try { sessionStorage.setItem(key, '1'); } catch (e) {}
+          bar.remove();
+        });
+      })();`}
+    </script>
+  )
+}
+
+<style>
+  .announce {
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: var(--text-sm);
+  }
+  .announce__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-3);
+    padding-block: var(--s-2);
+    text-align: center;
+  }
+  .announce__msg {
+    color: inherit;
+  }
+  a.announce__msg {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .announce__close {
+    flex: none;
+    margin-left: auto;
+    background: none;
+    border: 0;
+    color: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 var(--s-1);
+    opacity: 0.85;
+  }
+  .announce__close:hover {
+    opacity: 1;
+  }
+</style>
