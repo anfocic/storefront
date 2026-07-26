@@ -300,6 +300,10 @@ export type HomeSection =
       image?: string;
       /** Alt text — required whenever `image` is set. */
       imageAlt?: string;
+      /** Video in the media slot (takes precedence over `image`). Use `src`
+       *  for a self-hosted file (`poster` optional, falls back to `image`), or
+       *  `embed` for a YouTube/Vimeo embed URL. Ignored for `background`. */
+      video?: { src?: string; embed?: string; poster?: string };
       /** Where the image sits relative to the text. Default `top`. */
       mediaPosition?: "left" | "right" | "top" | "background" | "none";
       /** Text alignment. Default `center` (or `left` in two-column layouts). */

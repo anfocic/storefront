@@ -13,13 +13,15 @@ const s = section.type === "prose" ? section : null;
 // (dev-authored, never user input), so rendering it as HTML here is safe.
 const bodyHtml = s ? marked.parse(s.body) : "";
 
-// Resolve layout from `mediaPosition`, defaulting sensibly to the presence of an
-// image. `none` (or no image) → text-only.
-const media = s?.mediaPosition ?? (s?.image ? "top" : "none");
-const hasImage = Boolean(s?.image) && media !== "none";
-const isSplit = hasImage && (media === "left" || media === "right");
-const isBg = hasImage && media === "background";
-const showMedia = hasImage && !isBg; // background uses the image as the section bg
+// Resolve layout from `mediaPosition`, defaulting sensibly to the presence of
+// media. `none` (or no media) → text-only. A video takes the media slot over an
+// image; `background` stays image-only (a video can't be the section backdrop).
+const hasVideo = Boolean(s?.video && (s.video.src || s.video.embed));
+const media = s?.mediaPosition ?? (s?.image || hasVideo ? "top" : "none");
+const hasMedia = (Boolean(s?.image) || hasVideo) && media !== "none";
+const isSplit = hasMedia && (media === "left" || media === "right");
+const isBg = Boolean(s?.image) && media === "background";
+const showMedia = hasMedia && !isBg; // background uses the image as the section bg
 const align = s?.align ?? (isSplit ? "left" : "center");
 // A background section defaults to a dark scheme (light text over the image).
 const theme = isBg ? (s?.theme ?? "dark") : (s?.theme ?? "light");
@@ -63,7 +65,23 @@ if (isBg && s?.image) {
       <div class="container prose-section__inner" data-reveal>
         {showMedia && (
           <div class="prose-section__media">
-            <img src={s.image} alt={s.imageAlt ?? ""} loading="lazy" />
+            {s.video?.embed ? (
+              <div class="prose-section__video">
+                <iframe
+                  src={s.video.embed}
+                  title={s.title}
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+            ) : s.video?.src ? (
+              <video controls preload="metadata" poster={s.video.poster ?? s.image}>
+                <source src={s.video.src} />
+              </video>
+            ) : (
+              <img src={s.image} alt={s.imageAlt ?? ""} loading="lazy" />
+            )}
           </div>
         )}
         <div class="prose-section__content">
@@ -173,10 +191,22 @@ if (isBg && s?.image) {
     align-items: center;
     --prose-max: var(--container-width);
   }
-  .prose-section__media img {
+  .prose-section__media img,
+  .prose-section__media video {
     display: block;
     width: 100%;
     height: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .prose-section__video {
+    aspect-ratio: 16 / 9;
+  }
+  .prose-section__video iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
   }
