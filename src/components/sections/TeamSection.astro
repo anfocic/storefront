@@ -1,0 +1,118 @@
+---
+import type { HomeSection } from "../../config/site.ts";
+
+interface Props {
+  section: HomeSection;
+}
+const { section } = Astro.props;
+// Narrow the union — this component only renders `team` entries.
+const s = section.type === "team" ? section : null;
+
+// Monogram fallback when a member has no photo: first letter of each of the
+// first two words of their name.
+function monogram(name: string): string {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0] ?? "")
+    .join("")
+    .toUpperCase();
+}
+---
+
+{
+  s && (
+    <section id={s.id} class="section team-section">
+      <div class="container" data-reveal>
+        {s.eyebrow && <span class="eyebrow team-section__eyebrow">{s.eyebrow}</span>}
+        {s.title && <h2 class="section__title">{s.title}</h2>}
+        <ul class="team-grid">
+          {s.members.map((m) => (
+            <li class="team-card">
+              {m.photo ? (
+                <img class="team-card__photo" src={m.photo} alt={m.photoAlt ?? m.name} loading="lazy" />
+              ) : (
+                <span class="team-card__monogram" aria-hidden="true">
+                  {monogram(m.name)}
+                </span>
+              )}
+              <span class="team-card__name">{m.name}</span>
+              {m.role && <span class="team-card__role">{m.role}</span>}
+              {m.bio && <p class="team-card__bio">{m.bio}</p>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .team-section__eyebrow {
+    display: block;
+    text-align: center;
+  }
+
+  .team-grid {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-8) 0 0;
+    display: grid;
+    gap: var(--s-8) var(--s-6);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 560px) {
+    .team-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 860px) {
+    .team-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .team-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .team-card__photo,
+  .team-card__monogram {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: var(--s-4);
+  }
+  .team-card__photo {
+    object-fit: cover;
+    box-shadow: var(--shadow-sm);
+  }
+  .team-card__monogram {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-2);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: var(--text-xl);
+  }
+
+  .team-card__name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .team-card__role {
+    font-size: var(--text-sm);
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .team-card__bio {
+    margin-top: var(--s-3);
+    font-size: var(--text-sm);
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
+</style>

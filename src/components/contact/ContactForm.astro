@@ -1,5 +1,5 @@
 ---
-import { legalLinks } from "../../config/site.ts";
+import { content, legalLinks } from "../../config/site.ts";
 
 const dullahanUrl = import.meta.env.PUBLIC_DULLAHAN_URL ?? "";
 const terms = legalLinks.find((l) => l.href.includes("terms"))!;
@@ -7,7 +7,21 @@ const privacy = legalLinks.find((l) => l.href.includes("privacy"))!;
 ---
 
 <div class="cform">
-  <form class="cform__form" id="contact-form" method="post" novalidate data-dullahan-url={dullahanUrl}>
+  <form
+    class="cform__form"
+    id="contact-form"
+    method="post"
+    novalidate
+    data-dullahan-url={dullahanUrl}
+    data-sending-label={content.contactForm.sendingLabel}
+    data-phone-prefix={content.contactForm.phonePrefix}
+    data-msg-name={content.contactForm.validation.name}
+    data-msg-email={content.contactForm.validation.email}
+    data-msg-phone={content.contactForm.validation.phone}
+    data-msg-message={content.contactForm.validation.message}
+    data-msg-unconfigured={content.contactForm.status.notConfigured}
+    data-msg-error={content.contactForm.status.error}
+  >
     <label class="honeypot" aria-hidden="true">
       Do not fill this
       <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" />
@@ -15,25 +29,25 @@ const privacy = legalLinks.find((l) => l.href.includes("privacy"))!;
 
     <div class="cform__row">
       <div class="cform__field">
-        <label class="cform__label" for="cf-name">Name</label>
+        <label class="cform__label" for="cf-name">{content.contactForm.fields.name}</label>
         <input class="cform__input" id="cf-name" name="name" autocomplete="name" required />
         <div class="cform__err" data-err-for="name"></div>
       </div>
       <div class="cform__field">
-        <label class="cform__label" for="cf-email">Email</label>
+        <label class="cform__label" for="cf-email">{content.contactForm.fields.email}</label>
         <input class="cform__input" id="cf-email" name="email" type="email" autocomplete="email" required />
         <div class="cform__err" data-err-for="email"></div>
       </div>
     </div>
 
     <div class="cform__field">
-      <label class="cform__label" for="cf-phone">Phone</label>
+      <label class="cform__label" for="cf-phone">{content.contactForm.fields.phone}</label>
       <input class="cform__input" id="cf-phone" name="phone" type="tel" autocomplete="tel" required />
       <div class="cform__err" data-err-for="phone"></div>
     </div>
 
     <div class="cform__field">
-      <label class="cform__label" for="cf-message">Message</label>
+      <label class="cform__label" for="cf-message">{content.contactForm.fields.message}</label>
       <textarea class="cform__input cform__textarea" id="cf-message" name="message" required></textarea>
       <div class="cform__err" data-err-for="message"></div>
     </div>
@@ -41,20 +55,20 @@ const privacy = legalLinks.find((l) => l.href.includes("privacy"))!;
     <p class="cform__status" data-form-status role="alert"></p>
 
     <button type="submit" class="btn btn--primary cform__submit" data-submit>
-      <span data-submit-label>Send Message</span>
+      <span data-submit-label>{content.contactForm.submitLabel}</span>
     </button>
 
     <p class="cform__agree">
-      By sending, you agree to our
-      <a href={terms.href}>{terms.label}</a> and
+      {content.contactForm.agreePrefix}
+      <a href={terms.href}>{terms.label}</a> {content.contactForm.agreeSeparator}
       <a href={privacy.href}>{privacy.label}</a>.
     </p>
   </form>
 
   <div class="cform__success is-hidden" id="cform-success" role="status">
-    <span class="cform__success-icon" aria-hidden="true">🐾</span>
-    <h3>Message sent!</h3>
-    <p>Thanks for getting in touch — we'll reply as soon as we can.</p>
+    <span class="cform__success-icon" aria-hidden="true">{content.contactForm.successIcon}</span>
+    <h3>{content.contactForm.successTitle}</h3>
+    <p>{content.contactForm.successBody}</p>
   </div>
 </div>
 

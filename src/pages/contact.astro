@@ -3,14 +3,15 @@ import Layout from "../layouts/Layout.astro";
 import ContactForm from "../components/contact/ContactForm.astro";
 import ContactInfo from "../components/contact/ContactInfo.astro";
 import { pageSEO, localBusinessSchema } from "../config/seo.ts";
+import { content } from "../config/site.ts";
 ---
 
 <Layout seo={pageSEO.contact} schemas={[localBusinessSchema()]}>
   <section class="section">
     <div class="container">
-      <span class="eyebrow" style="display:block;text-align:center">Get in touch</span>
-      <h1 class="section__title">Contact Us</h1>
-      <p class="section__lede">Questions or ready to book? We'd love to hear from you.</p>
+      <span class="eyebrow" style="display:block;text-align:center">{content.sections.contact.eyebrow}</span>
+      <h1 class="section__title">{content.sections.contact.pageTitle}</h1>
+      <p class="section__lede">{content.sections.contact.pageLede}</p>
     </div>
 
     <div class="container contact-grid" data-reveal>

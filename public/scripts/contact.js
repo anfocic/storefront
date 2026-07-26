@@ -3,16 +3,33 @@
     if (!(form instanceof HTMLFormElement)) return;
 
     const base = (form.dataset.dullahanUrl || "").replace(/\/$/, "");
+
+    // All user-facing copy comes from the form's data-* attributes (set from
+    // config in ContactForm.astro); the fallbacks keep the form working if a
+    // string is ever missing.
+    const cfg = {
+        sendingLabel: form.dataset.sendingLabel || "Sending…",
+        phonePrefix: form.dataset.phonePrefix ?? "Phone: ",
+        msg: {
+            name: form.dataset.msgName || "Please enter your name.",
+            email: form.dataset.msgEmail || "Please enter a valid email.",
+            phone: form.dataset.msgPhone || "Please enter a phone number.",
+            message: form.dataset.msgMessage || "Please add a short message.",
+            unconfigured: form.dataset.msgUnconfigured || "Form is not configured yet. Please call or email us instead.",
+            error: form.dataset.msgError || "Something went wrong. Please call or email us instead.",
+        },
+    };
+
     const success = document.getElementById("cform-success");
     const button = form.querySelector("[data-submit]");
     const label = form.querySelector("[data-submit-label]");
     const status = form.querySelector("[data-form-status]");
 
     const rules = {
-        name: (v) => (v.trim().length >= 2 ? "" : "Please enter your name."),
-        email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? "" : "Please enter a valid email."),
-        phone: (v) => (v.trim().length >= 6 ? "" : "Please enter a phone number."),
-        message: (v) => (v.trim().length >= 10 ? "" : "Please add a short message (10+ characters)."),
+        name: (v) => (v.trim().length >= 2 ? "" : cfg.msg.name),
+        email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? "" : cfg.msg.email),
+        phone: (v) => (v.trim().length >= 6 ? "" : cfg.msg.phone),
+        message: (v) => (v.trim().length >= 10 ? "" : cfg.msg.message),
     };
 
     const setError = (name, msg) => {
@@ -50,20 +67,20 @@
         if (!validate()) return;
 
         if (!base) {
-            if (status) status.textContent = "Form is not configured yet. Please call or email us instead.";
+            if (status) status.textContent = cfg.msg.unconfigured;
             return;
         }
 
         button.disabled = true;
         const original = label.textContent;
-        label.textContent = "Sending…";
+        label.textContent = cfg.sendingLabel;
 
         const name = form.elements.namedItem("name").value.trim();
         const email = form.elements.namedItem("email").value.trim();
         const phone = form.elements.namedItem("phone").value.trim();
         const body = form.elements.namedItem("message").value.trim();
         // dullahan /contact only stores {name,email,message}; fold phone in.
-        const message = `${body}\n\nPhone: ${phone}`;
+        const message = `${body}\n\n${cfg.phonePrefix}${phone}`;
 
         try {
             const res = await fetch(`${base}/contact`, {
@@ -78,7 +95,7 @@
             success?.classList.remove("is-hidden");
             success?.scrollIntoView({ behavior: "smooth", block: "center" });
         } catch {
-            if (status) status.textContent = "Something went wrong. Please call or email us instead.";
+            if (status) status.textContent = cfg.msg.error;
             button.disabled = false;
             label.textContent = original;
         }

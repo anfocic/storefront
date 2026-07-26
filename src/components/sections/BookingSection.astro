@@ -1,0 +1,65 @@
+---
+import type { HomeSection } from "../../config/site.ts";
+
+interface Props {
+  section: HomeSection;
+}
+const { section } = Astro.props;
+// Narrow the union — this component only renders `booking` entries.
+const s = section.type === "booking" ? section : null;
+---
+
+{
+  s && (
+    <section id={s.id} class="section booking-section">
+      <div class="container booking-section__inner" data-reveal>
+        {s.eyebrow && <span class="eyebrow booking-section__eyebrow">{s.eyebrow}</span>}
+        {s.title && <h2 class="section__title">{s.title}</h2>}
+        {s.lede && <p class="section__lede">{s.lede}</p>}
+
+        {s.embed ? (
+          <iframe
+            class="booking-section__embed"
+            src={s.url}
+            title={s.title ?? "Booking"}
+            loading="lazy"
+          />
+        ) : (
+          <a class="btn btn--primary booking-section__cta" href={s.url} target="_blank" rel="noopener noreferrer">
+            {s.label ?? "Book now"}
+          </a>
+        )}
+
+        {s.note && <p class="booking-section__note">{s.note}</p>}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .booking-section__inner {
+    max-width: 760px;
+    text-align: center;
+  }
+  .booking-section__eyebrow {
+    display: block;
+    text-align: center;
+  }
+  .booking-section__cta {
+    margin-top: var(--s-4);
+  }
+  .booking-section__embed {
+    display: block;
+    width: 100%;
+    height: 640px;
+    margin-top: var(--s-6);
+    border: 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+  .booking-section__note {
+    margin-top: var(--s-4);
+    font-size: var(--text-sm);
+    color: var(--ink-3);
+  }
+</style>

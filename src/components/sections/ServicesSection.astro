@@ -1,0 +1,18 @@
+---
+import Services from "../home/Services.astro";
+import { content } from "../../config/site.ts";
+import type { HomeSection } from "../../config/site.ts";
+interface Props {
+  section: HomeSection;
+}
+const s = content.sections.services;
+---
+
+<section id="services" class="section">
+  <div class="container">
+    <span class="eyebrow" style="display:block;text-align:center">{s.eyebrow}</span>
+    <h2 class="section__title">{s.title}</h2>
+    <p class="section__lede">{s.lede}</p>
+  </div>
+  <Services />
+</section>

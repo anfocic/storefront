@@ -1,0 +1,253 @@
+---
+import { marked } from "marked";
+import type { HomeSection } from "../../config/site.ts";
+
+interface Props {
+  section: HomeSection;
+}
+const { section } = Astro.props;
+// Narrow the union — this component only renders `prose` entries.
+const s = section.type === "prose" ? section : null;
+
+// Markdown → HTML at build time. `body` comes from the site config
+// (dev-authored, never user input), so rendering it as HTML here is safe.
+const bodyHtml = s ? marked.parse(s.body) : "";
+
+// Resolve layout from `mediaPosition`, defaulting sensibly to the presence of
+// media. `none` (or no media) → text-only. A video takes the media slot over an
+// image; `background` stays image-only (a video can't be the section backdrop).
+const hasVideo = Boolean(s?.video && (s.video.src || s.video.embed));
+const media = s?.mediaPosition ?? (s?.image || hasVideo ? "top" : "none");
+const hasMedia = (Boolean(s?.image) || hasVideo) && media !== "none";
+const isSplit = hasMedia && (media === "left" || media === "right");
+const isBg = Boolean(s?.image) && media === "background";
+const showMedia = hasMedia && !isBg; // background uses the image as the section bg
+const align = s?.align ?? (isSplit ? "left" : "center");
+// A background section defaults to a dark scheme (light text over the image).
+const theme = isBg ? (s?.theme ?? "dark") : (s?.theme ?? "light");
+const width = s?.width ?? "contained";
+
+// A `background` value that looks like a URL is used as an image; anything else
+// (hex, rgb(), a colour name) is applied verbatim.
+const bg = s?.background;
+const bgIsImage = bg
+  ? /^(https?:|\/|data:)/.test(bg) || /\.(jpe?g|png|webp|avif|gif|svg)$/i.test(bg)
+  : false;
+
+let sectionStyle = "";
+if (isBg && s?.image) {
+  // Scrim over the image keeps text legible; --scrim comes from the theme class.
+  sectionStyle = `background-image: linear-gradient(var(--scrim), var(--scrim)), url("${s.image}"); background-size: cover; background-position: center;`;
+} else if (bg) {
+  sectionStyle = bgIsImage
+    ? `background-image: url("${bg}"); background-size: cover; background-position: center;`
+    : `background: ${bg};`;
+}
+---
+
+{
+  s && (
+    <section
+      id={s.id}
+      class:list={[
+        "section",
+        "prose-section",
+        `prose-section--${theme}`,
+        `prose-section--w-${width}`,
+        `prose-section--align-${align}`,
+        { "prose-section--split": isSplit },
+        { "prose-section--media-left": media === "left" },
+        { "prose-section--top": showMedia && !isSplit },
+        { "prose-section--has-bg": isBg || Boolean(bg) },
+      ]}
+      style={sectionStyle}
+    >
+      <div class="container prose-section__inner" data-reveal>
+        {showMedia && (
+          <div class="prose-section__media">
+            {s.video?.embed ? (
+              <div class="prose-section__video">
+                <iframe
+                  src={s.video.embed}
+                  title={s.title}
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+            ) : s.video?.src ? (
+              <video controls preload="metadata" poster={s.video.poster ?? s.image}>
+                <source src={s.video.src} />
+              </video>
+            ) : (
+              <img src={s.image} alt={s.imageAlt ?? ""} loading="lazy" />
+            )}
+          </div>
+        )}
+        <div class="prose-section__content">
+          {s.eyebrow && <span class="eyebrow prose-section__eyebrow">{s.eyebrow}</span>}
+          <h2 class="section__title prose-section__title">{s.title}</h2>
+          {s.lede && <p class="prose-section__lede">{s.lede}</p>}
+          <div class="prose-section__body" set:html={bodyHtml} />
+          {(s.cta || s.secondaryCta) && (
+            <div class="prose-section__actions">
+              {s.cta && (
+                <a class="btn btn--primary" href={s.cta.href}>
+                  {s.cta.label}
+                </a>
+              )}
+              {s.secondaryCta && (
+                <a class="btn btn--ghost" href={s.secondaryCta.href}>
+                  {s.secondaryCta.label}
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  /* ---- width ---- */
+  .prose-section__inner {
+    --prose-max: 820px;
+    max-width: var(--prose-max);
+  }
+  .prose-section--w-narrow .prose-section__inner {
+    --prose-max: 640px;
+  }
+  .prose-section--w-full-bleed .prose-section__inner {
+    --prose-max: var(--container-width);
+  }
+
+  /* ---- alignment (text-only / stacked layouts) ---- */
+  .prose-section--align-left .prose-section__content {
+    text-align: left;
+  }
+  .prose-section--align-center .prose-section__content {
+    text-align: center;
+  }
+  .prose-section--align-right .prose-section__content {
+    text-align: right;
+  }
+  /* The shared .section__title / .eyebrow default to centered — follow `align`. */
+  .prose-section__title,
+  .prose-section__eyebrow {
+    text-align: inherit;
+  }
+
+  /* ---- content blocks ---- */
+  .prose-section__lede {
+    font-size: var(--text-lg);
+    color: var(--ink-2);
+    margin: 0 0 var(--s-6);
+  }
+  .prose-section__body {
+    color: var(--ink-2);
+    line-height: 1.8;
+  }
+  .prose-section__body :global(p) {
+    margin: 0 0 var(--s-4);
+  }
+  .prose-section__body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .prose-section__body :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose-section__body :global(ul),
+  .prose-section__body :global(ol) {
+    margin: 0 0 var(--s-4);
+    padding-left: 1.25em;
+  }
+  .prose-section__body :global(li) {
+    margin-bottom: var(--s-2);
+  }
+  .prose-section__body :global(strong) {
+    color: var(--ink);
+  }
+
+  .prose-section__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-8);
+  }
+  .prose-section--align-center .prose-section__actions {
+    justify-content: center;
+  }
+  .prose-section--align-right .prose-section__actions {
+    justify-content: flex-end;
+  }
+
+  /* ---- media: split (left/right) ---- */
+  .prose-section--split .prose-section__inner {
+    display: grid;
+    gap: var(--s-10);
+    align-items: center;
+    --prose-max: var(--container-width);
+  }
+  .prose-section__media img,
+  .prose-section__media video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .prose-section__video {
+    aspect-ratio: 16 / 9;
+  }
+  .prose-section__video iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  @media (min-width: 720px) {
+    .prose-section--split .prose-section__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+    /* content is first in the DOM → move media before it for a left image. */
+    .prose-section--media-left .prose-section__media {
+      order: -1;
+    }
+  }
+
+  /* ---- media: top (stacked) ---- */
+  .prose-section--top .prose-section__media {
+    order: -1;
+    margin-bottom: var(--s-8);
+  }
+  .prose-section--top.prose-section--align-center .prose-section__media img {
+    margin-inline: auto;
+    max-width: 720px;
+  }
+
+  /* ---- theme ---- */
+  .prose-section--dark {
+    --scrim: rgba(20, 22, 25, 0.55);
+  }
+  .prose-section--light {
+    --scrim: rgba(255, 255, 255, 0.55);
+  }
+  .prose-section--dark .prose-section__title,
+  .prose-section--dark .prose-section__body :global(strong) {
+    color: #fff;
+  }
+  .prose-section--dark .prose-section__lede,
+  .prose-section--dark .prose-section__body {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  /* Background sections need breathing room around the overlaid text. */
+  .prose-section--has-bg {
+    border-radius: var(--radius);
+  }
+</style>

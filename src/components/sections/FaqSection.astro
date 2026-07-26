@@ -1,0 +1,131 @@
+---
+import { marked } from "marked";
+import type { HomeSection } from "../../config/site.ts";
+
+interface Props {
+  section: HomeSection;
+}
+const { section } = Astro.props;
+// Narrow the union — this component only renders `faq` entries.
+const s = section.type === "faq" ? section : null;
+
+// Answers are Markdown, rendered at build time. Config is dev-authored, so
+// `set:html` is safe here (same as ProseSection).
+const items = s ? s.items.map((it) => ({ q: it.q, a: marked.parse(it.a) })) : [];
+---
+
+{
+  s && (
+    <section id={s.id} class="section faq-section">
+      <div class="container faq-section__inner" data-reveal>
+        {s.eyebrow && <span class="eyebrow faq-section__eyebrow">{s.eyebrow}</span>}
+        {s.title && <h2 class="section__title">{s.title}</h2>}
+        <div class="faq-section__list">
+          {items.map((it) => (
+            <details class="faq-item">
+              <summary class="faq-item__q">
+                <span class="faq-item__label">{it.q}</span>
+                <span class="faq-item__icon" aria-hidden="true" />
+              </summary>
+              <div class="faq-item__a" set:html={it.a} />
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .faq-section__inner {
+    max-width: 760px;
+  }
+  .faq-section__eyebrow {
+    display: block;
+    text-align: center;
+  }
+
+  .faq-section__list {
+    margin-top: var(--s-8);
+    border-top: 1px solid var(--rule);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .faq-item__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-5) 0;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none; /* hide default disclosure triangle */
+  }
+  /* Safari/WebKit disclosure marker */
+  .faq-item__q::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item__q:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* +/− icon drawn from borders so we ship no image */
+  .faq-item__icon {
+    position: relative;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+  }
+  .faq-item__icon::before,
+  .faq-item__icon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    background: var(--accent);
+    transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+  }
+  .faq-item__icon::before {
+    width: 100%;
+    height: 2px;
+  }
+  .faq-item__icon::after {
+    width: 2px;
+    height: 100%;
+  }
+  .faq-item[open] .faq-item__icon::after {
+    transform: rotate(90deg);
+    opacity: 0;
+  }
+
+  .faq-item__a {
+    padding: 0 0 var(--s-5);
+    color: var(--ink-2);
+    line-height: 1.8;
+  }
+  .faq-item__a :global(p) {
+    margin: 0 0 var(--s-3);
+  }
+  .faq-item__a :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .faq-item__a :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .faq-item__a :global(ul),
+  .faq-item__a :global(ol) {
+    margin: 0 0 var(--s-3);
+    padding-left: 1.25em;
+  }
+  .faq-item__a :global(li) {
+    margin-bottom: var(--s-1);
+  }
+</style>

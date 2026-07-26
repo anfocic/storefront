@@ -1,0 +1,45 @@
+---
+import ContactForm from "../contact/ContactForm.astro";
+import ContactInfo from "../contact/ContactInfo.astro";
+import { content } from "../../config/site.ts";
+import type { HomeSection } from "../../config/site.ts";
+interface Props {
+  section: HomeSection;
+}
+const s = content.sections.contact;
+---
+
+<section id="contact" class="section">
+  <div class="container contact-grid" data-reveal>
+    <div>
+      <span class="eyebrow">{s.eyebrow}</span>
+      <h2 class="section__title contact-grid__title">{s.title}</h2>
+      <p class="contact-grid__lede">{s.lede}</p>
+      <ContactInfo />
+    </div>
+    <ContactForm />
+  </div>
+</section>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: var(--s-10);
+    align-items: start;
+  }
+  .contact-grid__title {
+    text-align: left;
+    margin-bottom: var(--s-3);
+  }
+  .contact-grid__lede {
+    color: var(--ink-2);
+    margin-bottom: var(--s-6);
+  }
+  @media (max-width: 880px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: var(--s-8);
+    }
+  }
+</style>

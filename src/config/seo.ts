@@ -15,28 +15,39 @@ export type SEOOverrides = {
   noindex?: boolean;
 };
 
-// EDIT ME — site-wide SEO defaults.
+import { business } from "./site.ts";
+import { openingHoursSpec } from "../lib/hours.ts";
+
+// EDIT ME — site-wide SEO defaults. Name/NAP come from `business` (site.ts) to
+// avoid drift; the copy below is SEO-specific.
 const SITE = {
-  siteName: "Marigold",
+  siteName: business.name,
   siteUrl: import.meta.env.PUBLIC_SITE_URL ?? "https://example.com",
-  defaultTitle: "Marigold | Local, friendly, and done properly",
+  defaultTitle: `${business.name} | ${business.tagline.replace(/\.\s*$/, "")}`,
   defaultDescription:
     "A small local business starter — swap this copy for your own. Fast, static, and easy to make yours.",
   defaultImage: {
     url: "/og.png",
     width: 1200,
     height: 630,
-    alt: "Marigold",
+    alt: business.name,
   } as SeoImage,
 };
 
 const t = (page: string) => `${page} | ${SITE.siteName}`;
 
+// Per-page SEO. Any entry may also set `image: { url, width, height, alt }` to
+// override the site-wide OG/Twitter image for that page (relative URLs are made
+// absolute automatically) — e.g. `image: { url: "/og-services.png" }`.
 export const pageSEO: Record<string, SEOOverrides> = {
   home: { title: SITE.defaultTitle, description: SITE.defaultDescription },
   services: {
     title: t("Services"),
     description: "What we offer and why people choose us. Swap for your own services.",
+  },
+  shop: {
+    title: t("Shop"),
+    description: "Browse our products. Swap for your own shop description.",
   },
   contact: {
     title: t("Contact"),
@@ -77,25 +88,26 @@ export function buildSEO(url: URL, overrides: SEOOverrides = {}) {
   return { site: SITE, canonical, title, description, type, image, robots };
 }
 
-// EDIT ME — replace with your own NAP details (name/address/phone).
+// NAP is sourced from `business` (site.ts) so it can't drift from the visible
+// site. `openingHours` uses schema.org's day/time format; edit for your hours.
 export function localBusinessSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    name: "Marigold",
+    name: business.name,
     "@id": `${SITE.siteUrl}/`,
     url: `${SITE.siteUrl}/`,
-    telephone: "+353 1 234 5678",
-    email: "hello@example.com",
+    telephone: business.phone,
+    email: business.email,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "1 Main Street",
-      addressLocality: "Yourtown",
-      addressRegion: "Co. Example",
-      postalCode: "A00 B000",
-      addressCountry: "IE",
+      streetAddress: business.address.street,
+      addressLocality: business.address.locality,
+      addressRegion: business.address.region,
+      postalCode: business.address.postalCode,
+      addressCountry: business.address.country,
     },
-    openingHours: "Mo-Fr 09:00-17:00",
-    priceRange: "$$",
+    openingHoursSpecification: openingHoursSpec(business.hours),
+    priceRange: business.priceRange,
   };
 }

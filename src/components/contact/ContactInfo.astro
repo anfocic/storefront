@@ -1,13 +1,16 @@
 ---
-import { business, socialLinks } from "../../config/site.ts";
+import { business, content, socialLinks, openingHoursByDay } from "../../config/site.ts";
 import Icon from "../shared/Icon.astro";
+import OpenBadge from "../OpenBadge.astro";
 
 const [emailUser, emailHost] = business.email.split("@");
 const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQuery)}`;
+// Keyless Google Maps embed (no API key needed). Only used when opted in.
+const mapEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(business.mapsQuery)}&output=embed`;
 ---
 
 <aside class="cinfo" aria-label="Contact information">
-  <h3 class="cinfo__title">Contact details</h3>
+  <h3 class="cinfo__title">{content.sections.contact.infoTitle}</h3>
 
   <ul class="cinfo__list">
     <li>
@@ -16,7 +19,7 @@ const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQu
     </li>
     <li>
       <Icon name="email" size={20} class="cinfo__icon" />
-      <a href="#" data-email-user={emailUser} data-email-host={emailHost}>Email us</a>
+      <a href="#" data-email-user={emailUser} data-email-host={emailHost}>{content.sections.contact.emailLabel}</a>
     </li>
     <li>
       <Icon name="pin" size={20} class="cinfo__icon" />
@@ -24,7 +27,20 @@ const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQu
     </li>
   </ul>
 
-  <p class="cinfo__hours">{business.openingHours}</p>
+  <div class="cinfo__hours">
+    <div class="cinfo__hours-head">
+      <span class="cinfo__hours-label">Opening hours</span>
+      <OpenBadge />
+    </div>
+    <ul class="cinfo__hours-list">
+      {openingHoursByDay.map((l) => (
+        <li>
+          <span>{l.label}</span>
+          <span>{l.value}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
 
   <div class="cinfo__social">
     {socialLinks.map(({ href, label, icon }) => (
@@ -33,6 +49,16 @@ const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQu
       </a>
     ))}
   </div>
+
+  {business.mapEmbed && (
+    <iframe
+      class="cinfo__map"
+      src={mapEmbedUrl}
+      title={`Map to ${business.name}`}
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    />
+  )}
 </aside>
 
 <style>
@@ -82,11 +108,41 @@ const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(business.mapsQu
     font-size: var(--text-sm);
     margin-bottom: var(--s-5);
   }
+  .cinfo__hours-head {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-2);
+  }
+  .cinfo__hours-label {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .cinfo__hours-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .cinfo__hours-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: 2px 0;
+  }
 
   .cinfo__social {
     display: flex;
     gap: var(--s-4);
     color: var(--ink-2);
+  }
+
+  .cinfo__map {
+    display: block;
+    width: 100%;
+    height: 220px;
+    margin-top: var(--s-5);
+    border: 0;
+    border-radius: var(--radius-sm);
   }
 
   .cinfo__social a:hover {
