@@ -1,0 +1,48 @@
+---
+import type { HomeSection } from "../../config/site.ts";
+interface Props {
+  section: HomeSection;
+}
+const { section } = Astro.props;
+// Narrow the union — this component only renders `prose` entries.
+const s = section.type === "prose" ? section : null;
+---
+
+{
+  s && (
+    <section id={s.id} class="section">
+      <div
+        class:list={["container", "prose-section", { "prose-section--left": s.align === "left" }]}
+        data-reveal
+      >
+        {s.eyebrow && <span class="eyebrow prose-section__eyebrow">{s.eyebrow}</span>}
+        <h2 class="section__title">{s.title}</h2>
+        <p class="prose-section__body">{s.body}</p>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .prose-section {
+    max-width: 680px;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .prose-section__eyebrow {
+    display: block;
+    text-align: center;
+  }
+  .prose-section__body {
+    color: var(--ink-2);
+    line-height: 1.8;
+    white-space: pre-line;
+  }
+  .prose-section--left {
+    text-align: left;
+    margin-inline: 0;
+  }
+  .prose-section--left .prose-section__eyebrow {
+    text-align: left;
+  }
+</style>

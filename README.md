@@ -39,6 +39,9 @@ Four places, in order of impact — no component edits needed:
    headings, ledes, labels, copyright). Set `business.logo` / `business.favicon`
    to `/public` paths to use image assets (otherwise a text wordmark shows); set
    `business.heroImage` for an image hero (otherwise a type-forward hero).
+   The home page is composed from the `homeSections` array — reorder, drop, or
+   add sections (including generic `prose` blocks like an About section) there;
+   no `index.astro` edits.
 2. **`src/styles/theme.css`** — the entire colour palette. Every component reads
    these tokens, so changing them here re-themes the whole site.
 3. **`src/content/legal/`** + **`src/data/reviews.json`** — your privacy/terms

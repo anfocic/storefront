@@ -1,0 +1,23 @@
+---
+import ReviewsCarousel from "../home/ReviewsCarousel.astro";
+import { content } from "../../config/site.ts";
+import type { HomeSection } from "../../config/site.ts";
+interface Props {
+  section: HomeSection;
+}
+const s = content.sections.reviews;
+---
+
+<section id="reviews" class="section reviews-section">
+  <div class="container">
+    <span class="eyebrow" style="display:block;text-align:center">{s.eyebrow}</span>
+    <h2 class="section__title">{s.title}</h2>
+  </div>
+  <ReviewsCarousel />
+</section>
+
+<style>
+  .reviews-section {
+    background: var(--bg-2);
+  }
+</style>

@@ -180,3 +180,41 @@ export const content = {
     backLabel: "Back home",
   },
 };
+
+// ─────────────────────────────────────────────────────────────────────────
+// Home page composition — an ordered list of sections. Reorder, remove, or add
+// entries here and the home page follows; no `index.astro` edits needed.
+//
+// Built-in types (hero/services/reviews/contact) pull their copy from the
+// `content` block above. The generic `prose` type is fully defined inline, so
+// you can add an About / mission / FAQ-style section — even several — from
+// config alone. Each `id` becomes the section's anchor (e.g. `/#about`).
+// ─────────────────────────────────────────────────────────────────────────
+export type HomeSection =
+  | { type: "hero" }
+  | { type: "services" }
+  | { type: "reviews" }
+  | { type: "contact" }
+  | {
+      type: "prose";
+      id: string;
+      title: string;
+      body: string;
+      eyebrow?: string;
+      align?: "center" | "left";
+    };
+
+export const homeSections: HomeSection[] = [
+  { type: "hero" },
+  { type: "services" },
+  { type: "reviews" },
+  { type: "contact" },
+  // Example — drop in an About section (uncomment / edit):
+  // {
+  //   type: "prose",
+  //   id: "about",
+  //   eyebrow: "About us",
+  //   title: "A little about the shop",
+  //   body: "Two or three sentences about who you are and why people trust you.",
+  // },
+];
