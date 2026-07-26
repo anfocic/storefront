@@ -81,10 +81,18 @@ const seo = buildSEO(Astro.url, seoOverrides);
     <script src="/scripts/reveal.js" is:inline defer></script>
     <script src="/scripts/email.js" is:inline defer></script>
 
-    {/* Privacy-first analytics (dullahan). Off until a siteId is set in
-        src/config/dullahan.ts, so a fresh clone sends nothing anywhere. */}
+    {/* Privacy-first analytics (dullahan). The tracker ships with this site
+        (public/pt.js, built from ./tracker) and posts events to the dullahan
+        `/collect` endpoint. Off until a siteId is set in src/config/dullahan.ts,
+        so a fresh clone sends nothing anywhere. */}
     {analyticsEnabled && (
-      <script is:inline defer src={`${dullahan.url}/pt.js`} data-site={dullahan.siteId}></script>
+      <script
+        is:inline
+        defer
+        src="/pt.js"
+        data-site={dullahan.siteId}
+        data-endpoint={`${dullahan.url}/collect`}
+      ></script>
     )}
   </body>
 </html>

@@ -54,11 +54,19 @@ Then set env in `.env` (copy `.env.example`):
 
 ## Analytics (dullahan, opt-in)
 
-Privacy-first, cookie-free analytics via dullahan's `/pt.js` tracker. It's **off
-by default** — a fresh clone sends nothing anywhere. To turn it on, edit
-`src/config/dullahan.ts`: set `siteId` to your dullahan site id and
-`analytics.enabled = true` (and set `PUBLIC_DULLAHAN_URL`). The tracker only
-loads when all three are set.
+Privacy-first, cookie-free analytics. The tracker **ships with this site** —
+it's built from `./tracker` into `public/pt.js` and served same-origin at
+`/pt.js`; it posts events to your dullahan `/collect` endpoint. dullahan itself
+is a pure-Rust ingest/read API and no longer serves any JavaScript.
+
+It's **off by default** — a fresh clone sends nothing anywhere. To turn it on,
+edit `src/config/dullahan.ts`: set `siteId` and `analytics.enabled = true`, and
+set `PUBLIC_DULLAHAN_URL` (the dullahan origin events are sent to). The tracker
+only loads when all three are set.
+
+`public/pt.js` is a committed, prebuilt artifact. To change the tracker, edit
+`tracker/src/`, then `cd tracker && npm install && npm run build && npm test`
+(re-emits `public/pt.js`) and commit it.
 
 ## Contact form (dullahan)
 
@@ -89,8 +97,9 @@ src/
   components/{header,footer,home,contact,shared}
   content/legal/*.md         # privacy + terms (content collection)
   data/reviews.json          # testimonials
-  pages/                     # /, /services, /contact, /legal/[slug], 404
-public/{fonts,scripts,favicon.svg,robots.txt}
+  pages/                     # /, /services, /contact, /legal/[slug], 404, robots.txt
+public/{fonts,scripts,pt.js,favicon.svg}   # pt.js = built analytics tracker
+tracker/                     # tracker source (TS) → builds public/pt.js
 ```
 
 ## Roadmap hooks
