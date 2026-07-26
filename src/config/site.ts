@@ -286,6 +286,25 @@ export type HomeSection =
       members: { name: string; role?: string; photo?: string; photoAlt?: string; bio?: string }[];
     }
   | {
+      type: "newsletter";
+      /** Anchor id — becomes `/#<id>`. */
+      id: string;
+      title?: string;
+      eyebrow?: string;
+      lede?: string;
+      /** Your email provider's form endpoint (Mailchimp/Buttondown/etc.) — the
+       *  form submits straight to it, so no integration code or keys are needed. */
+      action: string;
+      /** The email input's `name`, as your provider expects it. Default "email"
+       *  (Mailchimp uses "EMAIL"). */
+      emailField?: string;
+      method?: "post" | "get";
+      buttonLabel?: string;
+      placeholder?: string;
+      /** Small print under the form (consent / privacy line). */
+      note?: string;
+    }
+  | {
       type: "prose";
       /** Anchor id — becomes `/#<id>`. Lowercase, dash-separated. */
       id: string;
@@ -385,5 +404,16 @@ export const homeSections: HomeSection[] = [
   //     { name: "Alex Murphy", role: "Founder", photo: "/images/alex.jpg", photoAlt: "Alex Murphy", bio: "20 years in the trade." },
   //     { name: "Sam Byrne", role: "Stylist" },
   //   ],
+  // },
+  // Example — a newsletter signup (posts straight to your email provider):
+  // {
+  //   type: "newsletter",
+  //   id: "newsletter",
+  //   eyebrow: "Stay in touch",
+  //   title: "Join the list",
+  //   lede: "Occasional updates and offers. No spam.",
+  //   action: "https://your-provider.com/subscribe",
+  //   emailField: "email",
+  //   note: "We'll only email you now and then. Unsubscribe anytime.",
   // },
 ];

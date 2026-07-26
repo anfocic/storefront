@@ -1,0 +1,93 @@
+---
+import type { HomeSection } from "../../config/site.ts";
+
+interface Props {
+  section: HomeSection;
+}
+const { section } = Astro.props;
+// Narrow the union — this component only renders `newsletter` entries.
+const s = section.type === "newsletter" ? section : null;
+const emailField = s?.emailField ?? "email";
+const method = s?.method ?? "post";
+---
+
+{
+  s && (
+    <section id={s.id} class="section newsletter-section">
+      <div class="container newsletter-section__inner" data-reveal>
+        {s.eyebrow && <span class="eyebrow newsletter-section__eyebrow">{s.eyebrow}</span>}
+        {s.title && <h2 class="section__title">{s.title}</h2>}
+        {s.lede && <p class="section__lede">{s.lede}</p>}
+        <form class="newsletter-form" action={s.action} method={method} target="_blank">
+          <label class="newsletter-form__label" for={`${s.id}-email`}>
+            Email address
+          </label>
+          <div class="newsletter-form__row">
+            <input
+              id={`${s.id}-email`}
+              class="newsletter-form__input"
+              type="email"
+              name={emailField}
+              placeholder={s.placeholder ?? "you@example.com"}
+              required
+            />
+            <button type="submit" class="btn btn--primary">
+              {s.buttonLabel ?? "Subscribe"}
+            </button>
+          </div>
+          {s.note && <p class="newsletter-form__note">{s.note}</p>}
+        </form>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .newsletter-section__inner {
+    max-width: 560px;
+    text-align: center;
+  }
+  .newsletter-section__eyebrow {
+    display: block;
+    text-align: center;
+  }
+
+  .newsletter-form {
+    margin-top: var(--s-6);
+  }
+  /* Visible label kept for screen readers; the placeholder covers sighted users. */
+  .newsletter-form__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .newsletter-form__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    justify-content: center;
+  }
+  .newsletter-form__input {
+    flex: 1 1 260px;
+    min-width: 0;
+    padding: 0.85rem 1.1rem;
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    border: 2px solid var(--rule-2);
+    border-radius: var(--radius-pill);
+  }
+  .newsletter-form__input:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+    border-color: var(--accent);
+  }
+  .newsletter-form__note {
+    margin-top: var(--s-3);
+    font-size: var(--text-sm);
+    color: var(--ink-3);
+  }
+</style>
