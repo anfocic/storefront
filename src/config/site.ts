@@ -37,6 +37,10 @@ export const business = {
   },
   addressLine: "1 Main Street, Yourtown, Co. Example",
   mapsQuery: "1 Main Street, Yourtown, Ireland",
+  // Show an inline map on the contact card. Off by default: the embed loads a
+  // third-party Google iframe (sets cookies). The address always links out to
+  // Maps regardless of this. Uses `mapsQuery` above.
+  mapEmbed: false,
   // Opening hours, one entry per day. Use "Closed" (or "") for closed days;
   // split shifts with a comma ("9:00–13:00, 14:00–17:00"). This single source
   // drives the displayed hours, the JSON-LD, and the live "Open now" badge —
