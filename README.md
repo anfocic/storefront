@@ -82,14 +82,22 @@ redeploying the site. Prices come back as integer minor units + a `currency`
 from the API; product images are absolute URLs you host (a CDN/object store).
 The detail page pings the product's view counter so you can see what's viewed.
 
-> dullahan must allow this site's origin to read `/products` cross-origin — set
+> The shop calls are tenant-scoped: `dullahan.siteId` is sent as `?site=` on
+> every catalog request, so it must be set and registered in dullahan or the
+> requests 400. dullahan must also allow this site's origin to read
+> `/products` cross-origin — set
 > `PRODUCT_ORIGINS` on the server (it's open by default).
 
 ## Contact form (dullahan)
 
-The form POSTs `{ name, email, message }` to `${PUBLIC_DULLAHAN_URL}/contact`.
-Stand up a [dullahan](https://github.com/intrebit/dullahan) instance, set its
-`contact_to` to your inbox, and allow this site's origin (CORS). No API key on
+The form POSTs `{ site, name, email, message }` to
+`${PUBLIC_DULLAHAN_URL}/contact`, where `site` is `dullahan.contact.site` — the
+tenant id registered in dullahan's `sites` table. dullahan is multi-tenant and
+refuses a submission whose site it does not recognise (503) rather than
+delivering it to another site's inbox, so this must be set.
+Stand up a [dullahan](https://github.com/intrebit/dullahan) instance, register
+this site (`POST /sites`) with `contact_to` set to your inbox. CORS is open on
+`/contact`, so nothing to allow. No API key on
 the client. Extra fields (e.g. phone) can be folded into the message —
 see `public/scripts/contact.js`.
 

@@ -19,7 +19,7 @@ const shop = content.sections.shop;
       <p class="section__lede">{shop.lede}</p>
     </div>
 
-    <div id="shop" data-base={dullahan.url}>
+    <div id="shop" data-base={dullahan.url} data-site={dullahan.siteId}>
       <p class="shop__msg" data-loading>{shop.loading}</p>
       <p class="shop__msg" data-empty hidden>{shop.empty}</p>
       <p class="shop__msg" data-error hidden>{shop.error}</p>
@@ -51,6 +51,8 @@ const shop = content.sections.shop;
   const tpl = document.getElementById("pcard") as HTMLTemplateElement | null;
   if (root && tpl) {
     const base = root.dataset.base ?? "";
+    // dullahan requires the tenant on every catalog call.
+    const site = root.dataset.site ?? "";
     const grid = root.querySelector<HTMLUListElement>("[data-grid]")!;
     const loading = root.querySelector<HTMLElement>("[data-loading]")!;
     const empty = root.querySelector<HTMLElement>("[data-empty]")!;
@@ -80,13 +82,13 @@ const shop = content.sections.shop;
     };
 
     (async () => {
-      if (!base) {
+      if (!base || !site) {
         hide(loading);
         show(empty);
         return;
       }
       try {
-        const { products } = await fetchProducts(base);
+        const { products } = await fetchProducts(base, site);
         hide(loading);
         if (!products.length) {
           show(empty);

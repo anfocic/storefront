@@ -3,6 +3,9 @@
     if (!(form instanceof HTMLFormElement)) return;
 
     const base = (form.dataset.dullahanUrl || "").replace(/\/$/, "");
+    // dullahan is multi-tenant: without this the submission is refused (503)
+    // rather than falling back to some other site's inbox.
+    const site = form.dataset.site || "";
 
     // All user-facing copy comes from the form's data-* attributes (set from
     // config in ContactForm.astro); the fallbacks keep the form working if a
@@ -66,7 +69,7 @@
 
         if (!validate()) return;
 
-        if (!base) {
+        if (!base || !site) {
             if (status) status.textContent = cfg.msg.unconfigured;
             return;
         }
@@ -86,7 +89,7 @@
             const res = await fetch(`${base}/contact`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, message }),
+                body: JSON.stringify({ site, name, email, message }),
             });
 
             if (!res.ok) throw new Error(`HTTP ${res.status}`);

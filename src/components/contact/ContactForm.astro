@@ -1,7 +1,12 @@
 ---
 import { content, legalLinks } from "../../config/site.ts";
+import { dullahan } from "../../config/dullahan.ts";
 
 const dullahanUrl = import.meta.env.PUBLIC_DULLAHAN_URL ?? "";
+// dullahan routes the submission to this tenant's recipient. It is required:
+// a submission naming no site, or an unknown one, is refused with a 503 rather
+// than delivered to another site's inbox.
+const contactSite = dullahan.contact.site ?? dullahan.siteId;
 const terms = legalLinks.find((l) => l.href.includes("terms"))!;
 const privacy = legalLinks.find((l) => l.href.includes("privacy"))!;
 ---
@@ -13,6 +18,7 @@ const privacy = legalLinks.find((l) => l.href.includes("privacy"))!;
     method="post"
     novalidate
     data-dullahan-url={dullahanUrl}
+    data-site={contactSite}
     data-sending-label={content.contactForm.sendingLabel}
     data-phone-prefix={content.contactForm.phonePrefix}
     data-msg-name={content.contactForm.validation.name}
